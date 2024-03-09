@@ -36,11 +36,8 @@ logger.info("Express.js initialisiert.");
 app.set("views", "templates/");
 const istDevModus = app.get("env") === "development";
 logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produktion"}.`);
-const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus });
-// Im Modus "Entwicklung" werden Änderungen an Templates ohne Neustart der Anwendung wirksam.
-nj.env.addFilter("datum", function(date, format) {
-  return moment(date).format(format);
-});
+const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus }); // Im Modus "Entwicklung" werden Änderungen an Templates ohne Neustart der Anwendung wirksam.
+nj.env.addFilter("datum", function(date, format) { return moment(date).format(format); });
 
 
 // Web-Server starten
@@ -50,10 +47,4 @@ app.listen( PORTNUMMER,
 
   
 // Kafka-Konsument starten  
-try {
-    kafkaEmpfaengerStarten(PORTNUMMER);
-}
-catch (error) {
-
-    logger.error(`Fehler beim Starten des Kafka-Consumers: ${error}`);
-}
+kafkaEmpfaengerStarten(PORTNUMMER);
