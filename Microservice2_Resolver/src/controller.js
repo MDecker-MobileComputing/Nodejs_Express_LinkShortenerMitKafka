@@ -23,6 +23,8 @@ function getKuerzel(request, response) {
 
     logger.info(`Anfrage für Kürzel erhalten: ${kuerzel}`);
 
+    response.status(404);
+
     response.render("nicht_gefunden", {
         titel: "Fehler",
         kuerzel: kuerzel

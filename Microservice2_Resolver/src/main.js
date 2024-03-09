@@ -20,6 +20,7 @@ logger.info(`Portnummer für HTTP-Server laut Konfiguration: ${PORTNUMMER}`);
 // Express.js konfigurieren
 
 const app = express();
+app.use( express.static("statischerWebContent") );
 routenRegistrieren(app);
 logger.info("Express.js initialisiert.");
 
@@ -28,10 +29,8 @@ logger.info("Express.js initialisiert.");
 app.set("views", "templates/");
 const istDevModus = app.get("env") === "development";
 logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produktion"}.`);
-expressNunjucks(app, {
-    watch  : istDevModus,
-    noCache: istDevModus
-});
+expressNunjucks(app, { watch  : istDevModus, noCache: istDevModus });
+// Im Modus "Entwicklung" werden Änderungen an Templates ohne Neustart der Anwendung wirksam.
 
 
 // Web-Server starten
