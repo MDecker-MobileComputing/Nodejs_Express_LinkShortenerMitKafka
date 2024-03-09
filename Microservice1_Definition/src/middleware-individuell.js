@@ -67,6 +67,7 @@ export function mwCheckUrl(req, res, next) {
 
     if ( validator.isURL(url) ) {
 
+        logger.debug("URL ist korrekt: " + url);
         next();
 
     } else {
