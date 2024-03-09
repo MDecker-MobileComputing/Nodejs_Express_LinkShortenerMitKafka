@@ -1,4 +1,8 @@
-import logging from "logging";
+import logging   from "logging";
+import validator from 'validator';
+
+// Diese Datei enthält Middleware-Funktionen, die speziell für einzelne REST-Endpunkte
+// registriert werden. Sie sind nicht allgemein für alle Endpunkte gültig.
 
 const logger = logging.default("mw-individuell");
 
@@ -30,23 +34,23 @@ export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
 
     if (!kuerzel || kuerzel.length === 0) {
 
-        const fehlerText = "Fehler: Pflichtfeld 'kuerzel' fehlt oder ist leer.";
+        const fehlerText = "Pflichtfeld 'kuerzel' fehlt oder ist leer.";
         logger.error(fehlerText);
-        res.status(400).send(fehlerText);
+        res.status(400).send({ "nachricht": fehlerText });
         return;
     }
     if (!url || url.length === 0) {
 
-        const fehlerText = "Fehler: Pflichtfeld 'url' fehlt oder ist leer.";
+        const fehlerText = "Pflichtfeld 'url' fehlt oder ist leer.";
         logger.error(fehlerText);
-        res.status(400).send(fehlerText);
+        res.status(400).send({ "nachricht": fehlerText });
         return;
     }
     if (!beschreibung || beschreibung.length === 0) {
 
-        const fehlerText = "Fehler: Pflichtfeld 'beschreibung' fehlt oder ist leer.";
+        const fehlerText = "Pflichtfeld 'beschreibung' fehlt oder ist leer.";
         logger.error(fehlerText);
-        res.status(400).send(fehlerText);
+        res.status(400).send({ "nachricht": fehlerText });
         return;
     }
 
@@ -61,13 +65,13 @@ export function mwCheckUrl(req, res, next) {
 
     const url = req.body.url;
 
-    if (url.startsWith("http://") || url.startsWith("https://")) {
+    if ( validator.isURL(url) ) {
 
         next();
 
     } else {
 
-        logger.error("URL fängt nicht mit 'http://' oder 'https://' an: " + url);
-        res.status(400).send("URL muss mit 'http://' oder 'https://' beginnen.");
+        logger.error("Ungültige URL: " + url);
+        res.status(400).send({ "nachricht": "Ungültige URL für neuen Shortlink." });
     }
 }

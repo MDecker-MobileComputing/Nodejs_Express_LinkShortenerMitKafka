@@ -12,6 +12,7 @@ const logger = logging.default("main");
 // Express.js konfigurieren
 const app = express();
 app.use( express.static("statischerWebContent") );
+app.use(express.json());
 app.use( mwRequestLogger    );
 app.use( mwCatchIllegalJson );
 routenRegistrieren(app);

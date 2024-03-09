@@ -1,10 +1,9 @@
 import logging from "logging";
 
-//import { shortlinkAufloesen } from "./service.js";
-
-import { mwWerteTrimmen                     } from "./middleware-individuell";
-import { mwCheckPflichtfelderNeuerShortlink } from "./middleware-individuell";
-import { mwCheckUrl                         } from "./middleware-individuell";
+import { shortlinkNeu                       } from "./service.js";
+import { mwWerteTrimmen                     } from "./middleware-individuell.js";
+import { mwCheckPflichtfelderNeuerShortlink } from "./middleware-individuell.js";
+import { mwCheckUrl                         } from "./middleware-individuell.js";
 
 const logger = logging.default("controller");
 
@@ -29,17 +28,34 @@ export function routenRegistrieren(app) {
 
 
 /**
- * Funktion für HTTP-POST-Request um Shortlink zu definieren.
+ * Funktion für HTTP-POST-Request um neuen Shortlink zu definieren.
  * 
  * @param request  HTTP-Request, muss folgende Fehler enthalten:
  *                 `kuerzel`, `url`, `beschreibung`.
  */
 async function postShortlink(request, response) {
 
+    const kuerzel      = request.body.kuerzel;
+    const url          = request.body.url;
+    const beschreibung = request.body.beschreibung;
 
-    const kuerzel      = req.body.kuerzel;
-    const url          = req.body.url;
-    const beschreibung = req.body.beschreibung;
+    const objNeu = {
+        kuerzel: kuerzel,
+        url: url,
+        beschreibung: beschreibung
+    };
+
+    const erfolg = await shortlinkNeu(objNeu);
+    if (erfolg === true) {
+            
+            response.status(201)
+                    .send(objNeu); // objNeu enthält wegen "Call by Reference" das generierte Passwort
+
+    } else {
+
+        response.status(409)
+                .send({ "nachricht: ": `Shortlink existiert bereits: ${kuerzel}`});
+    }
 }
 
 
