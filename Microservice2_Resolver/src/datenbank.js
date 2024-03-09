@@ -58,3 +58,19 @@ export function getByKuerzel(kuerzel) {
 
     return datenbank.data[ kuerzel ];
 }
+
+
+/**
+ * Shortlink-Objekt in Datenbank speichern oder aktualisieren.
+ * <br>
+ * `upsert`: Insert oder Update
+ * 
+ * @param {*} shortlinkObjekt Neues Objekt oder geändertes Objekt für Shortlink
+ */
+export async function upsert(shortlinkObjekt) {
+        
+    datenbank.data[ shortlinkObjekt.kuerzel ] = shortlinkObjekt;
+    await datenbank.write();
+
+    logger.info(`Datensatz upserted: ${shortlinkObjekt.kuerzel}`);
+}

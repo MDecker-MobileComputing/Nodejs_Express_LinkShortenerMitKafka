@@ -1,7 +1,7 @@
 import logging from "logging";
 import moment  from "moment";
 
-import { getByKuerzel } from "./datenbank.js";
+import { getByKuerzel, upsert } from "./datenbank.js";
 
 
 const logger = logging.default("service");
@@ -55,4 +55,25 @@ export function shortlinkAufloesen(kuerzel) {
             return dbErgebnisObjekt;
         }        
     }
+}
+
+
+/**
+ * Shortlink-Datensatz (via Kafka empfangen) neu anlegen oder aktualisieren.
+ * 
+ * @param {*} shortlinkObjekt 
+ */
+export async function neuOderAktualisieren(shortlinkObjekt) {
+
+    const dbErgebnisObjekt = getByKuerzel(kuerzel);
+    if (dbErgebnisObjekt === undefined) {
+
+        logger.info(`Versuche neuen Shortlink in DB zu speichern: ${shortlinkObjekt.kuerzel}`);
+        
+    } else {
+
+        logger.info(`Versuche Shortlink in DB zu aktualisieren: ${shortlinkObjekt.kuerzel}`);
+    }
+
+    await upsert(shortlinkObjekt);    
 }
