@@ -1,7 +1,7 @@
 import logging             from "logging";
 import { Kafka, logLevel } from "kafkajs";
 
-const logger = logging.default("kafka");
+const logger = logging.default("kafka-empfaenger");
 
 
 /*
@@ -29,8 +29,8 @@ export async function kafkaEmpfaengerStarten(portNummber) {
             brokers: ["zimolong.eu:9092"],
             sasl: {
                 mechanism: "plain",
-                username: "dhbw",
-                password: "dhbw"
+                username: "alice",
+                password: "g3h3im"
             },
             ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
             connectionTimeout: 1000,
