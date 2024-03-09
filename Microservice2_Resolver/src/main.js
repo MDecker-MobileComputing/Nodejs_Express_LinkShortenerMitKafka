@@ -1,9 +1,11 @@
 import express            from "express";
-import logging            from "logging";
 import expressNunjucks    from "express-nunjucks";
+import logging            from "logging";
+import moment             from "moment";
 
 import { routenRegistrieren      } from "./controller.js";
 import { datenbankInitialisieren } from "./datenbank.js";
+import { kafkaEmpfaengerStarten  } from "./kafka.js";
 
 
 const logger = logging.default("main");
@@ -34,11 +36,24 @@ logger.info("Express.js initialisiert.");
 app.set("views", "templates/");
 const istDevModus = app.get("env") === "development";
 logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produktion"}.`);
-expressNunjucks(app, { watch  : istDevModus, noCache: istDevModus });
+const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus });
 // Im Modus "Entwicklung" werden Änderungen an Templates ohne Neustart der Anwendung wirksam.
+nj.env.addFilter("datum", function(date, format) {
+  return moment(date).format(format);
+});
 
 
 // Web-Server starten
 app.listen( PORTNUMMER,
     () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
   );
+
+  
+// Kafka-Konsument starten  
+try {
+    kafkaEmpfaengerStarten(PORTNUMMER);
+}
+catch (error) {
+
+    logger.error(`Fehler beim Starten des Kafka-Consumers: ${error}`);
+}

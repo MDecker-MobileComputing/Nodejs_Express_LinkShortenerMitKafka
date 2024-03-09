@@ -2,6 +2,8 @@
 
 {% block inhalt %}
 
+<br>
+
 <h2><a href="{{ url }}" target="_blank">{{ url }}</a></h2>
 
 <p>
@@ -9,14 +11,16 @@
    {{ beschreibung }} 
 </p>
 
+<br>
+
 <p>
    <strong>Erstellt am:</strong> 
-   {{ erstellt_am }} 
+   {{ erstellt_am | datum('D. MMMM YYYY (ddd), HH:mm:ss') }} 
 </p>
 
 <p>
    <strong>Geändert am:</strong> 
-   {{ geaendert_am }} 
+   {{ geaendert_am | datum('D. MMMM YYYY (ddd), HH:mm:ss') }} 
 </p>
 
 

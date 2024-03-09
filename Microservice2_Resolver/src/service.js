@@ -1,25 +1,9 @@
 import logging from "logging";
-import moment  from "moment";
 
 import { getByKuerzel, upsert } from "./datenbank.js";
 
 
 const logger = logging.default("service");
-
-
-/**
- * Mit moment.js Datum+Zeit im ISO-Format in deutsches Format umwandeln.
- * 
- * @param {*} isoDatum Datum+Zeit im ISO-Format
- * 
- * @returns Darstellung im deutschen Format; 
- *          Beispiel: `9. März 2024 (Sa.), 19:34:56`
- */
-function isoDateToGerman(isoDatum) {
-
-    const germanFormat = moment(isoDatum).locale("de").format("D. MMMM YYYY (ddd), HH:mm:ss");
-    return germanFormat;
-}
 
 
 /**
@@ -48,9 +32,6 @@ export function shortlinkAufloesen(kuerzel) {
         } else {
 
             logger.info(`Kürzel gefunden, ist aktiv: ${kuerzel}`);
-
-            dbErgebnisObjekt.erstellt_am  = isoDateToGerman( dbErgebnisObjekt.erstellt_am  );
-            dbErgebnisObjekt.geaendert_am = isoDateToGerman( dbErgebnisObjekt.geaendert_am );
 
             return dbErgebnisObjekt;
         }        
