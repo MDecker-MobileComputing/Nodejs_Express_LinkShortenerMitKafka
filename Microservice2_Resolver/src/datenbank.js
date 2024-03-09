@@ -32,15 +32,18 @@ let datenbank = null;
  * Datenbank initialisieren.
  * 
  * @param {*} dateiname Dateiname für Datenbankdatei (jede Microservice-Instanz 
- *                      muss eine eigene Datenbankdatei haben)
+ *                      muss eine eigene Datenbankdatei haben); muss schon
+ *                      Suffix ".json" haben, aber kein Verzeichnis.
  */
 export async function datenbankInitialisieren(dateiname) {
     
-    datenbank = await JSONFilePreset( dateiname, anfangsDaten );
+    const datenbankDatei = `db/${dateiname}`
+    datenbank = await JSONFilePreset( datenbankDatei, anfangsDaten );
     await datenbank.write();
 
     const anzahlSchluessel = Object.keys( datenbank.data ).length;
-    logger.info(`Datenbank "${dateiname}", Anzahl Shortlinks: ${anzahlSchluessel}`);
+    logger.info(`Datenbank initialisiert: ${datenbankDatei}`);
+    logger.info(`Anzahl Datensätze: ${anzahlSchluessel}`);
 }
 
 
