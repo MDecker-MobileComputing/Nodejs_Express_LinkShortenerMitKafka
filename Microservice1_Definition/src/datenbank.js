@@ -33,7 +33,7 @@ export async function datenbankInitialisieren() {
 
     const anzahlSchluessel = Object.keys( datenbank.data ).length;
     logger.info(`Datenbank initialisiert: ${datenbankDatei}`);
-    logger.info(`Anzahl Datensätze: ${anzahlSchluessel}`);
+    anzahlDatensaetzeToLogger();
 }
 
 
@@ -52,6 +52,16 @@ export async function getShortlinkByKuerzel(kuerzel) {
 
 
 /**
+ * Schreibt aktuelle Anzahl der Datensätze auf den Logger.
+ */
+function anzahlDatensaetzeToLogger() {
+
+    const anzahlDatensaetze = Object.keys( datenbank.data ).length;
+    logger.info(`Anzahl Datensätze: ${anzahlDatensaetze}`);
+}
+
+
+/**
  * Neues Shortlink-Objekt in Datenbank einfügen oder bestehendes aktualisieren.
  * 
  * @param {*} shortlinkObjekt Neues oder aktualisiertes Shortlink-Objekt.
@@ -60,6 +70,7 @@ export async function upsert(shortlinkObjekt) {
 
     datenbank.data[ shortlinkObjekt.kuerzel ] = shortlinkObjekt;
     await datenbank.write();
-
-    logger.info(`Datensatz upserted: ${shortlinkObjekt.kuerzel}`);
+    
+    logger.info(`Datensatz upserted für Shortlink "${shortlinkObjekt.kuerzel}".`);
+    anzahlDatensaetzeToLogger();
 }

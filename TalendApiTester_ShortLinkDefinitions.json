@@ -1,0 +1,54 @@
+{
+  "version": 6,
+  "entities": [
+    {
+      "entity": {
+        "type": "Project",
+        "id": "bb3954d7-a94c-436e-960e-37dc20dfd10b",
+        "name": "URL Shortener"
+      },
+      "children": [
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n  \"kuerzel\": \"katze-200\",\n  \"url\": \"https://http.cat/status/200\", \n  \"beschreibung\": \"Katzbild für HTTP-Status-Code 200\"  \n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8000",
+              "path": "/api/v1/shortlink/"
+            },
+            "id": "1fb25653-94e7-47f5-823f-61cc53f0f0e5",
+            "name": "Neuer Short-Link",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 import logging   from "logging";
 
-import { getShortlinkByKuerzel, upsert } from "./datenbank.js";
+import { getShortlinkByKuerzel } from "./datenbank.js";
+import { upsert                } from "./datenbank.js";
+import { sendeKafkaNachricht   } from "./kafka.js";
 
 const logger = logging.default("service");
 
@@ -20,10 +22,19 @@ function passwortGenerieren() {
 /**
  * Service-Funktion für neuen Shortlink.
  * 
- * @param {} shortlinkObjekt Objekt mit Daten für neuen Shortlink
+ * @param {} shortlinkObjekt Objekt mit Daten für neuen Shortlink; bei Erfolg
+ *                           enthält es die folgenden zusätzlichen Attribute:
+ *                           - `passwort` (generiertes Passwort)
+ *                           - `erstellt_am` (Datum/Zeitpunkt der Erstellung)
+ *                           - `geaendert_am` (selber Wert wie `erstellt_am`)
  * 
- * @return {string} Passwort für neuen Shortlink, oder leerer String, wenn
- *                  Shortlink bereits existiert.
+ * @return {object} Fehlerobjekt; es ist leer, wenn kein Fehler aufgetreten ist.
+ *                  Dann kann über `shortlinkObjekt.passwort` das generierte Passwort
+ *                  ausgelesen werden, sowie die Datum/Zeitpunkte über `shortlinkObjekt.erstellt_am`
+ *                  und `shortlinkObjekt.geaendert_am` (wegen "Call by Reference" sind diese 
+ *                  Änderungen für den Aufrufer sichtbar). 
+ *                  Bei Fehlern ist entweder das Attribut `nutzerfehler` oder `kafkafehler` 
+ *                  gesetzt.
  */
 export async function shortlinkNeu(shortlinkObjekt) {
 
@@ -31,12 +42,24 @@ export async function shortlinkNeu(shortlinkObjekt) {
     if (dbErgebnis) {
 
         logger.info(`Shortlink existiert bereits: ${shortlinkObjekt.kuerzel}`);
-        return false;
+        return { nutzerfehler: "Shortlink existiert bereits" };
     }
 
     shortlinkObjekt.passwort = passwortGenerieren();
 
+    const jetztDateIsoString = new Date().toISOString();
+    shortlinkObjekt.erstellt_am  = jetztDateIsoString;
+    shortlinkObjekt.geaendert_am = jetztDateIsoString;
+
     await upsert(shortlinkObjekt);
 
-    return true;
+    const kafkaErfolg = await sendeKafkaNachricht(shortlinkObjekt);
+    if (kafkaErfolg) {
+            
+        return {}; // leeres Fehlerobjekt
+
+    } else {
+
+        return { kafkafehler: "Shortlink konnte nicht über Kafka versendet werden." };
+    }
 }

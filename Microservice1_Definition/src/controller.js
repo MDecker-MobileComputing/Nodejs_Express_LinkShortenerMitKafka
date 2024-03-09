@@ -45,17 +45,22 @@ async function postShortlink(request, response) {
         beschreibung: beschreibung
     };
 
-    const erfolg = await shortlinkNeu(objNeu);
-    if (erfolg === true) {
-            
-            response.status(201)
-                    .send(objNeu); // objNeu enthält wegen "Call by Reference" das generierte Passwort
+    const fehlerObjekt = await shortlinkNeu(objNeu);
+    if (fehlerObjekt.nutzerfehler) {
 
-    } else {
-
-        response.status(409)
-                .send({ "nachricht: ": `Shortlink existiert bereits: ${kuerzel}`});
+        response.status(409) // Conflict
+                 .send({ "nachricht: ": `Shortlink existiert bereits: ${kuerzel}`});
+        return;
     }
+    if (fehlerObjekt.kafkafehler) {
+
+        response.status(500) // Internal Server Error
+                 .send({ "nachricht: ": `Shortlink konnte nicht über Kafka versendet werden.`});
+        return;
+    }
+
+    response.status(201) // Created
+            .send(objNeu);
 }
 
 
