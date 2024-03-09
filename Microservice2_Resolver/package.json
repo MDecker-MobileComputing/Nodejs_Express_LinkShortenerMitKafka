@@ -1,4 +1,6 @@
 {
+  "name": "shortlink_resolver",
+  "type": "module",
   "dependencies": {
     "cross-env": "^7.0.3",
     "express": "^4.18.3",
