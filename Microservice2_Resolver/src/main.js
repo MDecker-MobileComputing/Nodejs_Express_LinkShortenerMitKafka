@@ -2,7 +2,8 @@ import express            from "express";
 import logging            from "logging";
 import expressNunjucks    from "express-nunjucks";
 
-import routenRegistrieren from "./controller.js";
+import { routenRegistrieren      } from "./controller.js";
+import { datenbankInitialisieren } from "./datenbank.js";
 
 
 const logger = logging.default("main");
@@ -18,8 +19,11 @@ if (isNaN(PORTNUMMER)) {
 logger.info(`Portnummer für HTTP-Server laut Konfiguration: ${PORTNUMMER}`);
 
 
-// Express.js konfigurieren
+// Datenbank initialisieren
+datenbankInitialisieren(`datenbank-${PORTNUMMER}.json`);
 
+
+// Express.js konfigurieren
 const app = express();
 app.use( express.static("statischerWebContent") );
 routenRegistrieren(app);

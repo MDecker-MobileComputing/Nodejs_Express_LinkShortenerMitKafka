@@ -1,0 +1,23 @@
+{% extends "basis.html" %}
+
+{% block inhalt %}
+
+<h2><a href="{{ url }}" target="_blank">{{ url }}</a></h2>
+
+<p>
+   <strong>Beschreibung:</strong> 
+   {{ beschreibung }} 
+</p>
+
+<p>
+   <strong>Erstellt am:</strong> 
+   {{ erstellt_am }} 
+</p>
+
+<p>
+   <strong>Geändert am:</strong> 
+   {{ geaendert_am }} 
+</p>
+
+
+{% endblock %}
