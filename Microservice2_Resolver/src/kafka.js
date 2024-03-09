@@ -23,14 +23,14 @@ export async function kafkaEmpfaengerStarten(portNummber) {
     const clientUndGroupId = `shortlink-resolver-${portNummber}`;
 
     try {
-        
+
         const kafka = new Kafka({
             clientId: clientUndGroupId,
             brokers: ["zimolong.eu:9092"],
             sasl: {
                 mechanism: "plain",
-                username: "alice",
-                password: "g3h3im"
+                username: "dhbw",
+                password: "dhbw"
             },
             ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
             connectionTimeout: 1000,

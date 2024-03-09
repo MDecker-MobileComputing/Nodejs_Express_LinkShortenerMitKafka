@@ -1,4 +1,4 @@
-import logging  from "logging";
+import logging from "logging";
 
 import { shortlinkAufloesen } from "./service.js";
 
