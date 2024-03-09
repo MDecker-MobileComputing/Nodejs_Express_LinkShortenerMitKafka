@@ -6,6 +6,13 @@ import { getByKuerzel } from "./datenbank.js";
 const logger = logging.default("service");
 
 
+// convert ISO data to German format
+function isoDateToGerman(isoDatum) {
+
+    const datum = new Date(isoDatum);
+    return datum.toLocaleString("de-DE");
+}
+
 
 /**
  * Service-Funktion für Auflösen von Shortlink.
@@ -33,6 +40,10 @@ export function shortlinkAufloesen(kuerzel) {
         } else {
 
             logger.info(`Kürzel gefunden, ist aktiv: ${kuerzel}`);
+
+            dbErgebnisObjekt.erstellt_am  = isoDateToGerman(dbErgebnisObjekt.erstellt_am );
+            dbErgebnisObjekt.geaendert_am = isoDateToGerman(dbErgebnisObjekt.geaendert_am);
+
             return dbErgebnisObjekt;
         }        
     }

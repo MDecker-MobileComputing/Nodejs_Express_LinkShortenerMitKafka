@@ -50,9 +50,10 @@ function getKuerzel(request, response) {
         response.status(200); // OK
         response.render("gefunden", {
             titel: `Shortlink "${kuerzel}" aufgelöst`,
-            kuerzel: kuerzel,
-            url: ergObjekt.url,
-            beschreibung: ergObjekt.beschreibung
+            url         : ergObjekt.url,
+            beschreibung: ergObjekt.beschreibung,
+            erstellt_am : ergObjekt.erstellt_am,
+            geaendert_am: ergObjekt.geaendert_am
         });
     }
 }

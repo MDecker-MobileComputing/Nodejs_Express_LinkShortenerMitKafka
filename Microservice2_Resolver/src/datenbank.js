@@ -11,15 +11,15 @@ const anfangsDaten =  {
         "url": "https://nodejs.org/en/about/previous-releases#release-schedule",
         "beschreibung": "Node.js Release Schedule",
         "ist_aktiv": true,
-        "erstellt_am": "2024-03-09T16:03:00Z",
-        "geaendert_am": "2023-03-09T17:30:20Z"
+        "erstellt_am": "2024-03-09T18:34:56.238Z",
+        "geaendert_am": "2024-03-09T18:37:00.000Z",
     }, 
     "testlink_inaktiv": {
         "url": "https://kafka.js.org/docs/admin#a-name-create-topics-a-create-topics",
         "beschreibung": "kafka.js - Admin API - createTopics()",
         "ist_aktiv": false,
-        "erstellt_am": "2021-01-01T00:00:00Z",
-        "geaendert_am": "2023-01-01T03:12:00Z"
+        "erstellt_am": "2024-03-08T18:34:56.238Z",
+        "geaendert_am": "2024-03-09T09:42:00.000Z",
     }
 };
 
