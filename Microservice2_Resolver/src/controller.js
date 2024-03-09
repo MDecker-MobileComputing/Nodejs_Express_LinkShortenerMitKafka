@@ -17,6 +17,10 @@ export default function(app) {
 };
 
 
+/**
+ * Funktion für HTTP-GET-Request zum Auflösen eines Kurzlinks. 
+ * Gibt eine mit Nunjucks gerenderte HTML-Seite zurück.
+ */
 function getKuerzel(request, response) {
 
     const kuerzel = request.params.kuerzel;

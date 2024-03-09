@@ -1,6 +1,7 @@
 import express            from "express";
 import logging            from "logging";
 import expressNunjucks    from "express-nunjucks";
+
 import routenRegistrieren from "./controller.js";
 
 
@@ -10,7 +11,7 @@ const logger = logging.default("main");
 const PORTNUMMER = process.env.PORTNUMMER || 9000;
 if (isNaN(PORTNUMMER)) {
 
-  logger.error(`Portnummer "${PORTNUMMER}" ist keine Zahl, Abbruch!`);
+  logger.error(`FEHLER: Portnummer "${PORTNUMMER}" ist keine Zahl, Abbruch!`);
   console.log();
   process.exit(1);
 }
