@@ -1,15 +1,10 @@
 import logging             from "logging";
 import { Kafka, logLevel } from "kafkajs";
 
+import { neuOderAktualisieren } from "./service.js";
+
 const logger = logging.default("kafka-empfaenger");
 
-
-/*
-const kafka = new Kafka({ brokers: [ "localhost:9092" ],
-                          clientId: "nodejs-kafka-sender",
-                          logLevel: logLevel.ERROR
-                        });
-*/                        
 
 /**
  * Kafka-Empfänger für Shortlink-Definitionen/Updates starten.
@@ -22,21 +17,29 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
     const clientUndGroupId = `shortlink-resolver-${portNummber}`;
 
-    try {
+    const kafka = new Kafka({ brokers: [ "localhost:9092" ],
+                            clientId: clientUndGroupId,
+                            logLevel: logLevel.ERROR
+                            });
 
-        const kafka = new Kafka({
-            clientId: clientUndGroupId,
-            brokers: ["zimolong.eu:9092"],
-            sasl: {
-                mechanism: "plain",
-                username: "alice",
-                password: "g3h3im"
-            },
-            ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
-            connectionTimeout: 1000,
-            authenticationTimeout: 1000,
-            logLevel: logLevel.ERROR,
-        });
+    /*
+    const kafka = new Kafka({
+        clientId: clientUndGroupId,
+        brokers: ["zimolong.eu:9092"],
+        sasl: {
+            mechanism: "plain",
+            username: "alice",
+            password: "g3h3im"
+        },
+        ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
+        connectionTimeout: 1000,
+        authenticationTimeout: 1000,
+        logLevel: logLevel.ERROR,
+    });
+    */
+        
+
+    try {
     
         // GroupID hängt von Port-Nummer ab, damit jede Instanz des Microservices eine eigene GroupID hat
         // und somit alle Microservice-Instanzen alle Nachrichten empfangen.
@@ -49,7 +52,20 @@ export async function kafkaEmpfaengerStarten(portNummber) {
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
 
-                logger.info(`Shortlink für Kürzel "${message.key}" empfangen: ${message.value}`);
+                const schluessel    = message.key.toString();
+                const payloadString = message.value.toString();
+                logger.info(`Shortlink für Kürzel "${schluessel}" empfangen: ${payloadString}`);
+
+                try {
+
+                    const payloadObjekt = JSON.parse(payloadString);
+
+                    await neuOderAktualisieren(payloadObjekt); // Service-Funktion aufrufen für Verbuchung in DB
+                }
+                catch (jsonFehler) {
+
+                    logger.error(`Fehler beim Parsen der JSON-Payload: ${jsonFehler}`);
+                }                
             },
         });
 

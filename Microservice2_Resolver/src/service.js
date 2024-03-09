@@ -46,14 +46,16 @@ export function shortlinkAufloesen(kuerzel) {
  */
 export async function neuOderAktualisieren(shortlinkObjekt) {
 
+    const kuerzel = shortlinkObjekt.kuerzel;
+
     const dbErgebnisObjekt = getByKuerzel(kuerzel);
     if (dbErgebnisObjekt === undefined) {
 
-        logger.info(`Versuche neuen Shortlink in DB zu speichern: ${shortlinkObjekt.kuerzel}`);
+        logger.info(`Versuche neuen Shortlink in DB zu speichern: ${kuerzel}`);
         
     } else {
 
-        logger.info(`Versuche Shortlink in DB zu aktualisieren: ${shortlinkObjekt.kuerzel}`);
+        logger.info(`Versuche Shortlink in DB zu aktualisieren: ${kuerzel}`);
     }
 
     await upsert(shortlinkObjekt);    
