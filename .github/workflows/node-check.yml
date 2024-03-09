@@ -17,6 +17,6 @@ jobs:
         while IFS= read -r file
         do
           node --check "$file"
-          ((zaehler++))
+          let zaehler+=1
         done < <(find . -name "*.js")
         echo "Anzahl js-Dateien mit Nodejs geprüft: $zaehler"
