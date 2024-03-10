@@ -13,6 +13,32 @@
             ],
             "program": "${workspaceFolder}\\Microservice1_Definition\\src\\main.js",
             "cwd": "${workspaceFolder}\\Microservice1_Definition"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "MS 'Link Resolver' (Instanz 1) starten",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\Microservice2_Resolver\\src\\main.js",
+            "cwd": "${workspaceFolder}\\Microservice2_Resolver",
+            "env": {
+                "PORTNUMMER": "9001"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "MS 'Link Resolver' (Instanz 2) starten",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\Microservice2_Resolver\\src\\main.js",
+            "cwd": "${workspaceFolder}\\Microservice2_Resolver",
+            "env": {
+                "PORTNUMMER": "9002"
+            }
         }
     ]
 }
