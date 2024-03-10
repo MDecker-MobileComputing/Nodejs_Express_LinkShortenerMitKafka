@@ -15,7 +15,7 @@ export function mwWerteTrimmen(req, res, next) {
     if (req.body.kuerzel     ) { req.body.kuerzel = req.body.kuerzel.trim(); }
 
     if (req.body.url         ) { req.body.url = req.body.url.trim(); }
-            
+
     if (req.body.beschreibung) { req.body.beschreibung = req.body.beschreibung.trim(); }
 
     next();
@@ -59,7 +59,29 @@ export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
 
 
 /**
- * Middleware-Funktion zum überprüfen, ob die übergebene URL korrekt ist. 
+ * Middleware-Funktion zum Überprüfen, ob der gewählte Bezeichner
+ * zulässig ist, insbesondere keine Leerzeichen enthält.
+ */
+export function mvCheckKuerzel(req, res, next) {
+
+    const kuerzel = req.body.kuerzel;
+
+    if (kuerzel.includes(" ")) {
+        const fehlerText = "Feld 'kuerzel' enthält Leerzeichen.";
+        logger.error(fehlerText);
+        res.status(400).send({ "nachricht": fehlerText });
+        return;
+    }
+
+    // check if string kuerzel contains a blank
+
+
+    next();
+}
+
+
+/**
+ * Middleware-Funktion zum Überprüfen, ob die übergebene URL korrekt ist.
  */
 export function mwCheckUrl(req, res, next) {
 
