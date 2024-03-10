@@ -41,7 +41,6 @@ export async function datenbankInitialisieren(dateiname) {
     datenbank = await JSONFilePreset( datenbankDatei, anfangsDaten );
     await datenbank.write();
 
-    const anzahlSchluessel = Object.keys( datenbank.data ).length;
     logger.info(`Datenbank initialisiert: ${datenbankDatei}`);
     anzahlDatensaetzeToLogger();
 }
