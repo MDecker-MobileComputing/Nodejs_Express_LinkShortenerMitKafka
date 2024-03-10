@@ -27,38 +27,6 @@ let verbunden = false;
 const producer = kafka.producer();
 
 
-process.on("SIGINT", async () => {
-    console.log("SIGINT (CTRL+C) erhalten");
-    await onHerunterfahren();
-    process.exit(0);
-});
-
-process.on("SIGQUIT", async () => {
-    console.log("SIGQUIT erhalten");
-    await onHerunterfahren();
-    process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-    console.log("SIGTERM erhalten");
-    await onHerunterfahren();
-    process.exit(0);
-});
-
-async function onHerunterfahren() {
-
-    if (verbunden === false) {
-
-        logger.warn("Kafka-Producer war nicht verbunden, daher keine Verbindung zu schließen.");
-    }
-
-    logger.info("Versuche, Kafka-Verbindung zu schließen...");
-    await producer.disconnect();
-    logger.info("Verbindung zu Kafka-Server geschlossen.");
-}
-
-
-
 /**
  * Neuen oder geänderten Shortlink via Kafka an die Resolver-Microservices senden.
  *
@@ -95,9 +63,11 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
             await producer.connect();
             logger.info("Verbindung zu Kafka-Server aufgebaut.");
             verbunden = true;
-        }
 
-        logger.info("Kafka-Producer verbunden.")
+        } else {
+
+            logger.info("Kafka-Producer war schon verbunden.")
+        }
 
         await producer.send({ topic: "Dozent.Decker.ShortLinks",
                               messages: [ nachrichtObjekt ]
