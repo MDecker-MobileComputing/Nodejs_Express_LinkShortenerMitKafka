@@ -22,9 +22,22 @@ const kafka = new Kafka({
     logLevel: logLevel.ERROR,
 });
 
-
+let verbunden = false;
 
 const producer = kafka.producer();
+
+process.on("SIGINT", async () => {
+
+    if (verbunden === false) {
+
+        logger.warn("Kafka-Producer war nicht verbunden, daher keine Verbindung zu schließen.");
+    }
+
+    logger.info("Versuche, Kafka-Verbindung zu schließen...");
+    await producer.disconnect();
+    logger.info("Verbindung zu Kafka-Server geschlossen.");
+    //process.exit(0);
+});
 
 
 /**
@@ -57,7 +70,14 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
             value: shortlinkObjektAlsJsonString
         };
 
-        await producer.connect();
+        if (verbunden === false) {
+
+            logger.info("Versuche Verbindung zu Kafka-Server aufzubauen...");
+            await producer.connect();
+            logger.info("Verbindung zu Kafka-Server aufgebaut.");
+            verbunden = true;
+        }
+
         logger.info("Kafka-Producer verbunden.")
 
         await producer.send({ topic: "Dozent.Decker.ShortLinks",
@@ -66,7 +86,7 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
 
         logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
 
-        await producer.disconnect();
+        //await producer.disconnect();
 
         return true;
     }
