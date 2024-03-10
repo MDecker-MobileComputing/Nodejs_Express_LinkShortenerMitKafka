@@ -2,9 +2,11 @@ import logging from "logging";
 
 import { shortlinkNeu                       } from "./service.js";
 import { mwWerteTrimmen                     } from "./middleware-individuell.js";
-import { mwCheckPflichtfelderNeuerShortlink } from "./middleware-individuell.js";
-import { mwCheckUrl                         } from "./middleware-individuell.js";
-import { mwCheckKuerzel                     } from "./middleware-individuell.js";
+
+import { mwCheckPflichtfelderNeuerShortlink,
+         mwCheckUrl,
+         mwCheckAenderungspasswort,
+         mwCheckKuerzel                     } from "./middleware-individuell.js";
 
 const logger = logging.default("controller");
 
@@ -17,17 +19,18 @@ const logger = logging.default("controller");
 export function routenRegistrieren(app) {
 
     const postPfad = "/api/v1/shortlink/";
-    const postMiddlewares = [ mwWerteTrimmen,
-                              mwCheckKuerzel,
-                              mwCheckPflichtfelderNeuerShortlink,
-                              mwCheckUrl ];
-    app.post(postPfad, postMiddlewares, postShortlink);
+    const postMiddlewareArray = [ mwWerteTrimmen,
+                                  mwCheckKuerzel,
+                                  mwCheckPflichtfelderNeuerShortlink,
+                                  mwCheckUrl ];
+    app.post(postPfad, postMiddlewareArray, postShortlink);
     logger.info(`Route registriert: POST ${postPfad}`);
 
     const putPfad = "/api/v1/shortlink/";
-    const putMiddlewares = [ mwWerteTrimmen,
-                             mwCheckKuerzel ];
-    app.put(putPfad, putMiddlewares, putShortLink);
+    const putMiddlewareArray = [ mwWerteTrimmen,
+                                 mwCheckKuerzel,
+                                 mwCheckAenderungspasswort ];
+    app.put(putPfad, putMiddlewareArray, putShortLink);
     logger.info(`Route registriert: PUT  ${putPfad}`);
 };
 
@@ -80,9 +83,10 @@ async function postShortlink(request, response) {
  */
 async function putShortLink(request, response) {
 
-    const kuerzel      = req.body.kuerzel;
-    const url          = req.body.url;
-    const beschreibung = req.body.beschreibung;
-    const passwort     = req.body.passwort;
+    const kuerzel      = request.body.kuerzel;
+    const beschreibung = request.body.beschreibung;
+    const istAktiv     = request.body.ist_aktiv;
 
+    response.status(501) // Not Implemented
+            .send({ "nachricht: ": "PUT-Methode für Shortlink noch nicht implementiert."});
 }

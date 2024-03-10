@@ -1,5 +1,8 @@
 import logging   from "logging";
-import validator from 'validator';
+import validator from "validator";
+
+import { pruefeAenderungspasswort } from "./service.js";
+
 
 // Diese Datei enthält Middleware-Funktionen, die speziell für einzelne REST-Endpunkte
 // registriert werden. Sie sind nicht allgemein für alle Endpunkte gültig.
@@ -100,5 +103,34 @@ export function mwCheckUrl(req, res, next) {
 
         logger.error("Ungültige URL: " + url);
         res.status(400).send({ "nachricht": "Ungültige URL für neuen Shortlink." });
+    }
+}
+
+
+/**
+ * Middleware-Funktion für HTTP-PUT-Request: überprüft, ob
+ * das Änderungs-Passwort korrekt ist.
+ */
+export function mwCheckAenderungspasswort(req, res, next) {
+
+    const kuerzel  = req.body.kuerzel;
+    const passwort = req.body.passwort;
+
+    if (!passwort || passwort.length === 0) {
+
+        logger.warn(`Request ohne Änderungspasswort für Kürzel "${kuerzel}" abgefangen.`);
+        res.status(401).send({ "nachricht": "Änderungs-Passwort fehlt." });
+        return;
+    }
+
+    const istOkay = pruefeAenderungspasswort(kuerzel, passwort);
+    if (istOkay) {
+
+        next();
+
+    } else {
+
+        logger.warn(`Request mit ungültigem Änderungspasswort für Kürzel "${kuerzel}" abgefangen.`);
+        res.status(401).send({ "nachricht": "Ungültiges Änderungs-Passwort." });
     }
 }

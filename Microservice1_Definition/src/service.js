@@ -9,7 +9,7 @@ const logger = logging.default("service");
 
 /**
  * Zufälliges Passwort generieren.
- * 
+ *
  * @returns Passwort, z.B. `n0i6fs` oder `ub5mfk`.
  */
 function passwortGenerieren() {
@@ -21,19 +21,19 @@ function passwortGenerieren() {
 
 /**
  * Service-Funktion für neuen Shortlink.
- * 
+ *
  * @param {} shortlinkObjekt Objekt mit Daten für neuen Shortlink; bei Erfolg
  *                           enthält es die folgenden zusätzlichen Attribute:
  *                           - `passwort` (generiertes Passwort)
  *                           - `erstellt_am` (Datum/Zeitpunkt der Erstellung)
  *                           - `geaendert_am` (selber Wert wie `erstellt_am`)
- * 
+ *
  * @return {object} Fehlerobjekt; es ist leer, wenn kein Fehler aufgetreten ist.
  *                  Dann kann über `shortlinkObjekt.passwort` das generierte Passwort
  *                  ausgelesen werden, sowie die Datum/Zeitpunkte über `shortlinkObjekt.erstellt_am`
- *                  und `shortlinkObjekt.geaendert_am` (wegen "Call by Reference" sind diese 
- *                  Änderungen für den Aufrufer sichtbar). 
- *                  Bei Fehlern ist entweder das Attribut `nutzerfehler` oder `kafkafehler` 
+ *                  und `shortlinkObjekt.geaendert_am` (wegen "Call by Reference" sind diese
+ *                  Änderungen für den Aufrufer sichtbar).
+ *                  Bei Fehlern ist entweder das Attribut `nutzerfehler` oder `kafkafehler`
  *                  gesetzt.
  */
 export async function shortlinkNeu(shortlinkObjekt) {
@@ -55,11 +55,38 @@ export async function shortlinkNeu(shortlinkObjekt) {
 
     const kafkaErfolg = await sendeKafkaNachricht(shortlinkObjekt);
     if (kafkaErfolg) {
-            
+
         return {}; // leeres Fehlerobjekt
 
     } else {
 
         return { kafkafehler: "Shortlink konnte nicht über Kafka versendet werden." };
     }
+}
+
+/**
+ * Methode überprüft, ob `passwort` das Änderungs-Passwort für den Shortlink
+ * mit Kürzel `kuerzel` ist.
+ *
+ * @param {*} kuerzel Kürzel von Shortlin
+ *
+ * @param {*} passwort Änderungs-Passwort für den Shortlink mit `kuerzel`.
+ *
+ * @returns `true` wenn das Passwort korrekt ist, sonst `false`.
+ */
+export function pruefeAenderungspasswort(kuerzel, passwort) {
+
+    const shortlinkObjekt = getShortlinkByKuerzel(kuerzel);
+    if (!shortlinkObjekt) {
+
+        logger.error(`Interner Fehler: Shortlink mit Kürzel ${kuerzel} nicht gefunden.`);
+        return false;
+    }
+
+    if (shortlinkObjekt.passwort === passwort) {
+
+        return true;
+    }
+
+    return false;
 }

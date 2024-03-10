@@ -26,12 +26,11 @@ let datenbank = null;
  * Datenbank initialisieren.
  */
 export async function datenbankInitialisieren() {
-    
-    const datenbankDatei = `db.json`
+
+    const datenbankDatei = "db.json";
     datenbank = await JSONFilePreset( datenbankDatei, anfangsDaten );
     await datenbank.write();
 
-    const anzahlSchluessel = Object.keys( datenbank.data ).length;
     logger.info(`Datenbank initialisiert: ${datenbankDatei}`);
     anzahlDatensaetzeToLogger();
 }
@@ -39,13 +38,13 @@ export async function datenbankInitialisieren() {
 
 /**
  * Shortlink-Objekt anhand des Kürzels aus der Datenbank auslesen.
- * 
+ *
  * @param {*} kuerzel Shortlink-Kürzel, für den Objekt zurückgegeben werden soll.
- * 
+ *
  * @return {*} Shortlink-Objekt, das zum Kürzel passt, oder `undefined`, wenn das
  *             Objekt nicht gefunden wurde.
  */
-export async function getShortlinkByKuerzel(kuerzel) {
+export function getShortlinkByKuerzel(kuerzel) {
 
     return datenbank.data[ kuerzel ];
 }
@@ -63,14 +62,14 @@ function anzahlDatensaetzeToLogger() {
 
 /**
  * Neues Shortlink-Objekt in Datenbank einfügen oder bestehendes aktualisieren.
- * 
+ *
  * @param {*} shortlinkObjekt Neues oder aktualisiertes Shortlink-Objekt.
  */
 export async function upsert(shortlinkObjekt) {
 
     datenbank.data[ shortlinkObjekt.kuerzel ] = shortlinkObjekt;
     await datenbank.write();
-    
+
     logger.info(`Datensatz upserted für Shortlink "${shortlinkObjekt.kuerzel}".`);
     anzahlDatensaetzeToLogger();
 }
