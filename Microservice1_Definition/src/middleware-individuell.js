@@ -59,6 +59,12 @@ export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
 
 
 /**
+ * Regulärer Ausdruck mit erlaubten Zeichen für Kürzel.
+ */
+const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
+
+
+/**
  * Middleware-Funktion zum Überprüfen, ob der gewählte Bezeichner
  * zulässig ist, insbesondere keine Leerzeichen enthält.
  */
@@ -66,15 +72,13 @@ export function mvCheckKuerzel(req, res, next) {
 
     const kuerzel = req.body.kuerzel;
 
-    if (kuerzel.includes(" ")) {
-        const fehlerText = "Feld 'kuerzel' enthält Leerzeichen.";
+    if (KUERZEL_REGEXP.test(kuerzel) == false) {
+
+        const fehlerText = `Feld 'kuerzel' enthält unerlaubte Zeichen: ${kuerzel}`;
         logger.error(fehlerText);
         res.status(400).send({ "nachricht": fehlerText });
         return;
     }
-
-    // check if string kuerzel contains a blank
-
 
     next();
 }
