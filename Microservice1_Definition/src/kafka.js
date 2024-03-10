@@ -31,10 +31,10 @@ const producer = kafka.producer();
 
 /**
  * Neuen oder geänderten Shortlink via Kafka an die Resolver-Microservices senden.
- * 
+ *
  * @param {object} shortlinkObjekt  Shortlink-Objekt, das gesendet werden soll; auch
  *                                  bei Änderungen müssen alle Attribute gesetzt sein.
- * 
+ *
  * @return {boolean} `true` wenn die Nachricht erfolgreich gesendet wurde, sonst `false`.
  */
 export async function sendeKafkaNachricht(shortlinkObjekt) {
@@ -47,11 +47,13 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
             beschreibung: shortlinkObjekt.beschreibung
             // passwort darf NICHT enthalten sein!
         };
-    
+
         const shortlinkObjektAlsJsonString = JSON.stringify(transportObjekt);
 
+        // Schlüssel als Key der Nachricht, damit eine Änderung des Shortlinks
+        // nicht die Originalnachricht überholt.
         const nachrichtObjekt = {
-            key: shortlinkObjekt.kuerzel,
+            key  : shortlinkObjekt.kuerzel,
             value: shortlinkObjektAlsJsonString
         };
 
@@ -62,7 +64,7 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
                     topic: "Dozent.Decker.ShortLinks",
                     messages: [ nachrichtObjekt ]
         });
-        
+
         await producer.disconnect();
 
         logger.info(`Kafka-Nachricht für Shortlink mit Kürzel ${shortlinkObjekt.kuerzel} gesendet.`);
@@ -70,7 +72,7 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
     }
     catch (fehler) {
 
-        logger.error("Fehler beim Senden der Kafka-Nachricht: " + error);
+        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}: ${error}`);
         return false;
     }
 }
