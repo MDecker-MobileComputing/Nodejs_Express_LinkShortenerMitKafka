@@ -1,14 +1,15 @@
 import logging from "logging";
 
-import { shortlinkNeu                       } from "./service.js";
-import { mwWerteTrimmen                     } from "./middleware-individuell.js";
+import { shortlinkNeu,
+         shortlinkAendern } from "./service.js";
 
 import { mwCheckPflichtfelderNeuerShortlink,
          mwCheckPflichtfelderAenderungShortlink,
          mwCheckUrl,
          mwWerteTypCheck,
+         mwWerteTrimmen,
          mwCheckAenderungspasswort,
-         mwCheckKuerzel                     } from "./middleware-individuell.js";
+         mwCheckKuerzel             } from "./middleware-individuell.js";
 
 const logger = logging.default("controller");
 
@@ -68,7 +69,7 @@ async function postShortlink(request, response) {
     if (fehlerObjekt.kafkafehler) {
 
         response.status(500) // Internal Server Error
-                 .send({ "nachricht: ": `Shortlink konnte nicht über Kafka versendet werden.`});
+                 .send({ "nachricht: ": "Shortlink konnte nicht über Kafka versendet werden."});
         return;
     }
 
@@ -92,6 +93,14 @@ async function putShortLink(request, response) {
     const beschreibung = request.body.beschreibung;
     const istAktiv     = request.body.ist_aktiv;
 
-    response.status(501) // Not Implemented
-            .send({ "nachricht: ": "PUT-Methode für Shortlink noch nicht implementiert."});
+    const fehlerObjekt = await shortlinkAendern(kuerzel, beschreibung, istAktiv);
+    if (fehlerObjekt.kafkafehler) {
+
+        response.status(500) // Internal Server Error
+                 .send({ "nachricht: ": "Shortlink-Änderung konnte nicht über Kafka versendet werden."});
+        return;
+    }
+
+    response.status(200) // OK
+            .send({ "nachricht: ": `Shortlink "${kuerzel}" erfolgreich geändert.`});
 }

@@ -1,4 +1,4 @@
-import logging   from "logging";
+import logging from "logging";
 
 import { getShortlinkByKuerzel } from "./datenbank.js";
 import { upsert                } from "./datenbank.js";
@@ -14,8 +14,9 @@ const logger = logging.default("service");
  */
 function passwortGenerieren() {
 
-    const passwort = Math.random().toString(36).substring(2, 8);
-    return passwort;
+    // die ersten beiden Zeichen im String sind immer "0.1",
+    // da der Wert von Math.random() immer zwischen 0.0 und 1.0 liegt
+    return Math.random().toString(36).substring(2, 8);
 }
 
 
@@ -51,9 +52,9 @@ export async function shortlinkNeu(shortlinkObjekt) {
     shortlinkObjekt.erstellt_am  = jetztDateIsoString;
     shortlinkObjekt.geaendert_am = jetztDateIsoString;
 
-    await upsert(shortlinkObjekt);
+    await upsert( shortlinkObjekt );
 
-    const kafkaErfolg = await sendeKafkaNachricht(shortlinkObjekt);
+    const kafkaErfolg = await sendeKafkaNachricht( shortlinkObjekt );
     if (kafkaErfolg) {
 
         return {}; // leeres Fehlerobjekt
@@ -63,6 +64,47 @@ export async function shortlinkNeu(shortlinkObjekt) {
         return { kafkafehler: "Shortlink konnte nicht über Kafka versendet werden." };
     }
 }
+
+
+/**
+ * Service-Funktion für Änderung eines Shortlinks; zumindest eines der
+ * Attribute `beschreibung` oder `ist_aktiv` muss gesetzt sein.
+ *
+ * @param {*} kuerzel Kürzel von Shortlink, der geändert werden soll.
+ *
+ * @param {*} beschreibung Neuer Beschreibungstext oder `null`, wenn nicht geändert werden soll.
+ *
+ * @param {*} istAktiv Neuer Wert für `ist_aktiv` oder `null`, wenn nicht geändert werden soll.
+ */
+export async function shortlinkAendern(kuerzel, beschreibung, istAktiv) {
+
+    const shortlinkAlt = await getShortlinkByKuerzel( kuerzel );
+
+    shortlinkAlt.geaendert_am = new Date().toISOString();
+    if (beschreibung) {
+
+        shortlinkAlt.beschreibung = beschreibung;
+        logger.info(`Beschreibung für Shortlink "${kuerzel}" geändert auf: ${beschreibung}`);
+    }
+    if (istAktiv != null && istAktiv != undefined) {
+
+        shortlinkAlt.ist_aktiv = istAktiv;
+        logger.info(`Aktiv-Status für Shortlink "${kuerzel}" geändert auf: ${istAktiv}`);
+    }
+
+    await upsert( shortlinkAlt ); // *** eigentliche Änderungsoperation auf der DB ***
+
+    const kafkaErfolg = await sendeKafkaNachricht( shortlinkAlt );
+    if (kafkaErfolg) {
+
+        return {}; // leeres Fehlerobjekt
+
+    } else {
+
+        return { kafkafehler: "Änderung konnte nicht über Kafka versendet werden." };
+    }
+}
+
 
 /**
  * Methode überprüft, ob `passwort` das Änderungspasswort für den Shortlink

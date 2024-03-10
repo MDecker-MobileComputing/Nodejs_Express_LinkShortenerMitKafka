@@ -39,11 +39,15 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
 
     try {
 
+        // Neues Objekt für Kafka-Nachricht erstellen, das nur die benötigten
+        // Attribute enthält (Passwort darf nicht über Kafka gesendet werden).
         const transportObjekt = {
-            kuerzel: shortlinkObjekt.kuerzel,
-            url: shortlinkObjekt.url,
-            beschreibung: shortlinkObjekt.beschreibung
-            // Passwort darf NICHT enthalten sein, weil das nur Microservice 1 kennen muss
+            kuerzel     : shortlinkObjekt.kuerzel,
+            url         : shortlinkObjekt.url,
+            beschreibung: shortlinkObjekt.beschreibung,
+            ist_aktiv   : shortlinkObjekt.ist_aktiv,
+            erstellt_am : shortlinkObjekt.erstellt_am,
+            geaendert_am: shortlinkObjekt.geaendert_am
         };
 
         const shortlinkObjektAlsJsonString = JSON.stringify(transportObjekt);
@@ -76,6 +80,7 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
         logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
 
         //await producer.disconnect();
+        // disconnect erst beim Herunterfahren des Microservices ... aber wie fängt man das ab?
 
         return true;
     }
