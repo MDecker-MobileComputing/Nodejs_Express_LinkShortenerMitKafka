@@ -10,6 +10,7 @@
     "cross-env": "^7.0.3"
   },
   "scripts": {
-    "start": "cross-env DEBUG=mw-individuell node src/main.js"
+    "start": "cross-env node src/main.js",
+    "start-loglevel-debug": "cross-env DEBUG=mw-individuell node src/main.js"
   }
 }

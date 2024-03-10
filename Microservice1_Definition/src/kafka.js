@@ -3,13 +3,13 @@ import logging             from "logging";
 
 const logger = logging.default("kafka-sender");
 
-
+/*
 const kafka = new Kafka({ brokers: [ "localhost:9092" ],
                           clientId: "nodejs-kafka-sender",
                           logLevel: logLevel.ERROR
                         });
+*/
 
-/*
 const kafka = new Kafka({
     clientId: "nodejs-kafka-sender",
     brokers: ["zimolong.eu:9092"],
@@ -23,7 +23,7 @@ const kafka = new Kafka({
     authenticationTimeout: 1000,
     logLevel: logLevel.ERROR,
 });
-*/
+
 
 
 const producer = kafka.producer();
@@ -45,13 +45,15 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
             kuerzel: shortlinkObjekt.kuerzel,
             url: shortlinkObjekt.url,
             beschreibung: shortlinkObjekt.beschreibung
-            // passwort darf NICHT enthalten sein!
+            // Passwort darf NICHT enthalten sein, weil das nur Microservice 1 kennen muss
         };
 
         const shortlinkObjektAlsJsonString = JSON.stringify(transportObjekt);
 
         // Schlüssel als Key der Nachricht, damit eine Änderung des Shortlinks
-        // nicht die Originalnachricht überholt.
+        // nicht die Originalnachricht überholt. Nachrichten mit demselben Schlüssel
+        // kommen nämlich in dieselbe Partition des Topics, und nur für eine Partition
+        // ist gewährleistet, dass eine Nachricht nicht eine andere überholt.
         const nachrichtObjekt = {
             key  : shortlinkObjekt.kuerzel,
             value: shortlinkObjektAlsJsonString
@@ -67,12 +69,12 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
 
         await producer.disconnect();
 
-        logger.info(`Kafka-Nachricht für Shortlink mit Kürzel ${shortlinkObjekt.kuerzel} gesendet.`);
+        logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
         return true;
     }
     catch (fehler) {
 
-        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}: ${error}`);
+        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}": ${error}`);
         return false;
     }
 }

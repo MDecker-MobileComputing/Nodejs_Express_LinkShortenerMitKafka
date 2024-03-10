@@ -10,3 +10,8 @@
 | Resolver Instanz 2 | 9002       |
 
 <br>
+
+Ähnliches Microservice-Beispiel mit Maven: 
+https://github.com/MDecker-MobileComputing/Maven_SpringBoot_LinkShortener
+
+<br>
