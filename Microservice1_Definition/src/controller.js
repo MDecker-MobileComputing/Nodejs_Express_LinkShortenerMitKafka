@@ -4,7 +4,9 @@ import { shortlinkNeu                       } from "./service.js";
 import { mwWerteTrimmen                     } from "./middleware-individuell.js";
 
 import { mwCheckPflichtfelderNeuerShortlink,
+         mwCheckPflichtfelderAenderungShortlink,
          mwCheckUrl,
+         mwWerteTypCheck,
          mwCheckAenderungspasswort,
          mwCheckKuerzel                     } from "./middleware-individuell.js";
 
@@ -19,7 +21,8 @@ const logger = logging.default("controller");
 export function routenRegistrieren(app) {
 
     const postPfad = "/api/v1/shortlink/";
-    const postMiddlewareArray = [ mwWerteTrimmen,
+    const postMiddlewareArray = [ mwWerteTypCheck,
+                                  mwWerteTrimmen,
                                   mwCheckKuerzel,
                                   mwCheckPflichtfelderNeuerShortlink,
                                   mwCheckUrl ];
@@ -27,9 +30,11 @@ export function routenRegistrieren(app) {
     logger.info(`Route registriert: POST ${postPfad}`);
 
     const putPfad = "/api/v1/shortlink/";
-    const putMiddlewareArray = [ mwWerteTrimmen,
+    const putMiddlewareArray = [ mwWerteTypCheck,
+                                 mwWerteTrimmen,
                                  mwCheckKuerzel,
-                                 mwCheckAenderungspasswort ];
+                                 mwCheckAenderungspasswort,
+                                 mwCheckPflichtfelderAenderungShortlink ];
     app.put(putPfad, putMiddlewareArray, putShortLink);
     logger.info(`Route registriert: PUT  ${putPfad}`);
 };

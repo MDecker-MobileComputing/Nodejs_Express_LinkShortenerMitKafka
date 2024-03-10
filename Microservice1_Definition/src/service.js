@@ -65,12 +65,12 @@ export async function shortlinkNeu(shortlinkObjekt) {
 }
 
 /**
- * Methode überprüft, ob `passwort` das Änderungs-Passwort für den Shortlink
+ * Methode überprüft, ob `passwort` das Änderungspasswort für den Shortlink
  * mit Kürzel `kuerzel` ist.
  *
  * @param {*} kuerzel Kürzel von Shortlin
  *
- * @param {*} passwort Änderungs-Passwort für den Shortlink mit `kuerzel`.
+ * @param {*} passwort  für den Shortlink mit `kuerzel`.
  *
  * @returns `true` wenn das Passwort korrekt ist, sonst `false`.
  */
