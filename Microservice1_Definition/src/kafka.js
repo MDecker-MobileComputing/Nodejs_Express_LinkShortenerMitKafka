@@ -1,28 +1,27 @@
 import { Kafka, logLevel } from "kafkajs";
 import logging             from "logging";
 
+import plainNutzernamePasswort from '../../kafka-sasl.js';
+
 const logger = logging.default("kafka-sender");
 
+/*
 const kafka = new Kafka({ brokers: [ "localhost:9092" ],
                           clientId: "nodejs-kafka-sender",
                           logLevel: logLevel.ERROR
                         });
+*/
 
-/*
 const kafka = new Kafka({
     clientId: "nodejs-kafka-sender",
     brokers: ["zimolong.eu:9092"],
-    sasl: {
-        mechanism: "plain",
-        username: "alice",
-        password: "g3h3im"
-    },
+    sasl: plainNutzernamePasswort,
     ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
     connectionTimeout: 1000,
     authenticationTimeout: 1000,
     logLevel: logLevel.ERROR,
 });
-*/
+
 
 
 const producer = kafka.producer();
@@ -61,19 +60,20 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
         await producer.connect();
         logger.info("Kafka-Producer verbunden.")
 
-        await producer.send({
-                    topic: "Dozent.Decker.ShortLinks",
-                    messages: [ nachrichtObjekt ]
-        });
+        const kafkaResult = await producer.send({
+                                    topic: "Dozent.Decker.ShortLinks",
+                                    messages: [ nachrichtObjekt ]
+                            });
+
+        logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
 
         await producer.disconnect();
 
-        logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
         return true;
     }
     catch (fehler) {
 
-        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}": ${error}`);
+        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}": ${fehler}`);
         return false;
     }
 }
