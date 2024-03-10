@@ -8,7 +8,7 @@ const logger = logging.default("mw-individuell");
 
 
 /**
- * Middleware-Funktion zum Trimmen von Werten in einem Request-Objekt.
+ * Middleware-Funktion zum Trimmen von Werten in einem HTTP-POST-Request.
  */
 export function mwWerteTrimmen(req, res, next) {
 
@@ -21,16 +21,18 @@ export function mwWerteTrimmen(req, res, next) {
     next();
 }
 
+/**
+ * Regulärer Ausdruck mit erlaubten Zeichen für Kürzel.
+ */
+const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 
 /**
- * Middleware-Funktion zum überprüfen, ob die drei Pflichtfelder für einen
- * neuen Shortlink gesetzt sind.
+ * Funktion für HTTP-POST-Request die Check, ob Kürzel gesetzt ist
+ * und einen zulässigen Wert hat.
  */
-export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
+export function mwCheckKuerzel(req, res, next) {
 
-    const kuerzel      = req.body.kuerzel;
-    const url          = req.body.url;
-    const beschreibung = req.body.beschreibung;
+    const kuerzel = req.body.kuerzel;
 
     if (!kuerzel || kuerzel.length === 0) {
 
@@ -39,6 +41,29 @@ export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
         res.status(400).send({ "nachricht": fehlerText });
         return;
     }
+
+    if (KUERZEL_REGEXP.test(kuerzel) == false) {
+
+        const fehlerText = `Feld 'kuerzel' enthält unerlaubte Zeichen: ${kuerzel}`;
+        logger.error(fehlerText);
+        res.status(400).send({ "nachricht": fehlerText });
+        return;
+    }
+
+    next();
+}
+
+
+/**
+ * Middleware-Funktion zum überprüfen, ob die beiden Pflichtfelder für einen
+ * neuen Shortlink gesetzt sind
+ * (für Check von Kürzel gibt es eigene Middleware-Funktion).
+ */
+export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
+
+    const url          = req.body.url;
+    const beschreibung = req.body.beschreibung;
+
     if (!url || url.length === 0) {
 
         const fehlerText = "Pflichtfeld 'url' fehlt oder ist leer.";
@@ -59,33 +84,8 @@ export function mwCheckPflichtfelderNeuerShortlink(req, res, next) {
 
 
 /**
- * Regulärer Ausdruck mit erlaubten Zeichen für Kürzel.
- */
-const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
-
-
-/**
- * Middleware-Funktion zum Überprüfen, ob der gewählte Bezeichner
- * zulässig ist, insbesondere keine Leerzeichen enthält.
- */
-export function mvCheckKuerzel(req, res, next) {
-
-    const kuerzel = req.body.kuerzel;
-
-    if (KUERZEL_REGEXP.test(kuerzel) == false) {
-
-        const fehlerText = `Feld 'kuerzel' enthält unerlaubte Zeichen: ${kuerzel}`;
-        logger.error(fehlerText);
-        res.status(400).send({ "nachricht": fehlerText });
-        return;
-    }
-
-    next();
-}
-
-
-/**
- * Middleware-Funktion zum Überprüfen, ob die übergebene URL korrekt ist.
+ * Middleware-Funktion zum Überprüfen, ob die in einem HTTP-POST-Request
+ * übergebene URL korrekt ist.
  */
 export function mwCheckUrl(req, res, next) {
 

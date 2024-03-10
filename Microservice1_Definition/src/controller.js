@@ -4,7 +4,7 @@ import { shortlinkNeu                       } from "./service.js";
 import { mwWerteTrimmen                     } from "./middleware-individuell.js";
 import { mwCheckPflichtfelderNeuerShortlink } from "./middleware-individuell.js";
 import { mwCheckUrl                         } from "./middleware-individuell.js";
-import { mvCheckKuerzel                     } from "./middleware-individuell.js";
+import { mwCheckKuerzel                     } from "./middleware-individuell.js";
 
 const logger = logging.default("controller");
 
@@ -17,12 +17,16 @@ const logger = logging.default("controller");
 export function routenRegistrieren(app) {
 
     const postPfad = "/api/v1/shortlink/";
-    const postMiddlewares = [ mwWerteTrimmen, mwCheckPflichtfelderNeuerShortlink, mvCheckKuerzel, mwCheckUrl ];
+    const postMiddlewares = [ mwWerteTrimmen,
+                              mwCheckKuerzel,
+                              mwCheckPflichtfelderNeuerShortlink,
+                              mwCheckUrl ];
     app.post(postPfad, postMiddlewares, postShortlink);
     logger.info(`Route registriert: POST ${postPfad}`);
 
     const putPfad = "/api/v1/shortlink/";
-    const putMiddlewares = [ mwWerteTrimmen ];
+    const putMiddlewares = [ mwWerteTrimmen,
+                             mwCheckKuerzel ];
     app.put(putPfad, putMiddlewares, putShortLink);
     logger.info(`Route registriert: PUT  ${putPfad}`);
 };
@@ -68,8 +72,11 @@ async function postShortlink(request, response) {
 /**
  * Funktion für HTTP-PUT-Request um Shortlink zu ändern.
  *
- * @param request  HTTP-Request, muss folgende Fehler enthalten:
- *                 `kuerzel`, `url`, `beschreibung`, `passwort`.
+ * @param request  HTTP-Request, muss folgende Pflichtfelder enthalten:
+ *                 - `kuerzel`: Definiert Kürzel, das geändert werden soll
+ *                 - `passwort`: Nachweis, dass man der "Besitzer" des Shortlinks ist
+ *                 - Mindestens eines der folgender Felder: `beschreibung`, `ist_aktiv`
+ *                   (die URL kann kann aus Sicherheitsgründen nicht geändert werden)
  */
 async function putShortLink(request, response) {
 
