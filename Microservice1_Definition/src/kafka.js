@@ -26,7 +26,26 @@ let verbunden = false;
 
 const producer = kafka.producer();
 
+
 process.on("SIGINT", async () => {
+    console.log("SIGINT (CTRL+C) erhalten");
+    await onHerunterfahren();
+    process.exit(0);
+});
+
+process.on("SIGQUIT", async () => {
+    console.log("SIGQUIT erhalten");
+    await onHerunterfahren();
+    process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+    console.log("SIGTERM erhalten");
+    await onHerunterfahren();
+    process.exit(0);
+});
+
+async function onHerunterfahren() {
 
     if (verbunden === false) {
 
@@ -36,8 +55,8 @@ process.on("SIGINT", async () => {
     logger.info("Versuche, Kafka-Verbindung zu schließen...");
     await producer.disconnect();
     logger.info("Verbindung zu Kafka-Server geschlossen.");
-    //process.exit(0);
-});
+}
+
 
 
 /**

@@ -2,12 +2,12 @@
   "name": "shortlink_definition",
   "type": "module",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "express": "^4.18.3",
     "kafkajs": "^2.2.4",
     "logging": "^3.3.0",
     "lowdb": "^7.0.1",
-    "validator": "^13.11.0",
-    "cross-env": "^7.0.3"
+    "validator": "^13.11.0"
   },
   "scripts": {
     "start": "cross-env node src/main.js",
