@@ -60,9 +60,8 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
         await producer.connect();
         logger.info("Kafka-Producer verbunden.")
 
-        const kafkaResult = await producer.send({
-                                    topic: "Dozent.Decker.ShortLinks",
-                                    messages: [ nachrichtObjekt ]
+        await producer.send({ topic: "Dozent.Decker.ShortLinks",
+                              messages: [ nachrichtObjekt ]
                             });
 
         logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
