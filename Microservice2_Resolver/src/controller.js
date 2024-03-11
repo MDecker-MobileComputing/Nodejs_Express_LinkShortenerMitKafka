@@ -50,7 +50,7 @@ function getKuerzel(request, response) {
 
         response.status(200); // OK
 
-        response.render("gefundenx", {
+        response.render("gefunden", {
             titel        : `Shortlink "${kuerzel}" aufgelöst`,
             url          : ergObjekt.url,
             beschreibung : ergObjekt.beschreibung,
