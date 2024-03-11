@@ -3,6 +3,7 @@ import { Kafka, logLevel } from "kafkajs";
 
 import { neuOderAktualisieren } from "./service.js";
 import plainNutzernamePasswort  from '../../kafka-sasl.js';
+import TOPIC_SHORTLINKS         from '../../kafka-sasl.js';
 
 const logger = logging.default("kafka-empfaenger");
 
@@ -44,7 +45,7 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
         await consumer.connect();
 
-        await consumer.subscribe({ topic: "Dozent.Decker.ShortLinks" });
+        await consumer.subscribe({ topic: TOPIC_SHORTLINKS });
 
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {

@@ -11,4 +11,9 @@ const plainNutzernamePasswort = {
     password: "g3h3im"
 };
 
-module.exports = plainNutzernamePasswort;
+const TOPIC_SHORTLINKS = "Dozent.Decker.ShortLinks";
+
+module.exports = {
+    plainNutzernamePasswort,
+    TOPIC_SHORTLINKS
+};
