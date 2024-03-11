@@ -31,7 +31,13 @@ mit *Launch Configurations* für alle in der Tabelle aufgeführten Microservice-
 
 ## Siehe auch
 
+<br>
+
 Ähnliches Microservice-Beispiel mit Maven:
 siehe [dieses Repo](https://github.com/MDecker-MobileComputing/Maven_SpringBoot_LinkShortener)
+
+<br>
+
+Nodejs und Kafka: siehe [dieses Repo](https://github.com/MDecker-MobileComputing/Nodejs_KafkaTest)
 
 <br>
