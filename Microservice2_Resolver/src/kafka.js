@@ -45,7 +45,7 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
         await consumer.connect();
 
-        await consumer.subscribe({ topic: TOPIC_SHORTLINKS });
+        await consumer.subscribe({ topic: "Dozent.Decker.ShortLinks" });
 
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
