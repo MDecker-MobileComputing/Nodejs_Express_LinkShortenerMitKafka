@@ -1,5 +1,4 @@
-
-## Microservices und Portnummern ##
+# Link-Shortener mit Microservice-Architektur und Kafka #
 
 <br>
 
@@ -11,6 +10,10 @@ Ergebnis-Seiten.
 
 <br>
 
+----
+
+## Microservices-Instanzen ##
+
 | Microservice | Instanz | Portnummer |
 | --- | --- | --- |
 | Shortlink Definition | Nur eine Instanz | [8000](http://localhost:8000) |
@@ -19,7 +22,16 @@ Ergebnis-Seiten.
 
 <br>
 
+Das Repository enthält im Ordner `.vscode/` eine Datei [launch.json](.vscode/launch.json)
+mit *Launch Configurations* für alle in der Tabelle aufgeführten Microservice-Instanzen.
+
+<br>
+
+----
+
+## Siehe auch
+
 Ähnliches Microservice-Beispiel mit Maven:
-https://github.com/MDecker-MobileComputing/Maven_SpringBoot_LinkShortener
+siehe [dieses Repo](https://github.com/MDecker-MobileComputing/Maven_SpringBoot_LinkShortener)
 
 <br>
