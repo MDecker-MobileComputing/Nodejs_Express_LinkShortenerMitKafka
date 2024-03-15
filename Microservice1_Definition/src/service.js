@@ -2,7 +2,7 @@ import logging from "logging";
 
 import { getShortlinkByKuerzel } from "./datenbank.js";
 import { upsert                } from "./datenbank.js";
-import { sendeKafkaNachricht   } from "./kafka.js";
+import { sendeKafkaNachricht   } from "./kafka-sender.js";
 
 const logger = logging.default("service");
 
