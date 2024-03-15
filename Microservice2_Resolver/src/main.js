@@ -33,11 +33,11 @@ logger.info("Express.js initialisiert.");
 
 
 // Template-Engine "Nunjucks" konfigurieren
-app.set("views", "templates/");
+app.set("views", "nunjucks-templates/");
 const istDevModus = app.get("env") === "development";
-logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produktion"}.`);
 const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus }); // Im Modus "Entwicklung" werden Änderungen an Templates ohne Neustart der Anwendung wirksam.
 nj.env.addFilter("datum", function(date, format) { return moment(date).format(format); });
+logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produktion"}.`);
 
 
 // Web-Server starten
