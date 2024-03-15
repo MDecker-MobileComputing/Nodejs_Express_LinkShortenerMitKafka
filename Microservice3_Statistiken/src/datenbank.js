@@ -56,6 +56,22 @@ export async function insert(statistikObjekt) {
 
 
 /**
+ * Gibt alle Datensätze für Zugriffe für das angegebene Kürzel und Datum zurück.
+ *
+ * @param {string} kuerzel Kürzel des Shortlinks
+ *
+ * @param {string} datum Datum im Format "YYYY-MM-DD"
+ */
+export function queryRecordsByKuerzelUndDatum(kuerzel, datum) {
+
+    const filterFunktion = datensatz => datensatz.kuerzel === kuerzel &&
+                                        datensatz.datum   === datum;
+
+    return datenbank.data.filter( filterFunktion );
+}
+
+
+/**
  * Schreibt aktuelle Anzahl der Datensätze auf den Logger.
  */
 function anzahlDatensaetzeToLogger() {
