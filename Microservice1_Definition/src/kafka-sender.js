@@ -8,21 +8,29 @@ const logger = logging.default("kafka-sender");
 const clientId = "nodejs-link-definition-sender"
 
 
-const kafka = new Kafka({ brokers: [ "localhost:9092" ],
-                          clientId: clientId,
-                          logLevel: logLevel.ERROR
-                        });
-/*
-const kafka = new Kafka({
-    clientId: clientId,
-    brokers: ["zimolong.eu:9092"],
-    sasl: plainNutzernamePasswort,
-    ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
-    connectionTimeout: 1000,
-    authenticationTimeout: 1000,
-    logLevel: logLevel.ERROR,
-});
-*/
+let kafka = null;
+
+if (plainNutzernamePasswort.username) {
+
+    logger.info("Konfiguration für entfernten Kafka-Server erkannt.");
+
+    kafka = new Kafka({ clientId: clientId,
+                        brokers: ["zimolong.eu:9092"],
+                        sasl: plainNutzernamePasswort,
+                        ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
+                        connectionTimeout: 1000,
+                        authenticationTimeout: 1000,
+                        logLevel: logLevel.ERROR
+                      });
+} else {
+
+    logger.info("Konfiguration für lokalen Kafka-Server erkannt.");
+
+    kafka = new Kafka({ brokers: [ "localhost:9092" ],
+                        clientId: clientId,
+                        logLevel: logLevel.ERROR
+                      });
+}
 
 
 let verbunden = false;

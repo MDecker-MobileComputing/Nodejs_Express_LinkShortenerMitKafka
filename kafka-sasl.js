@@ -11,6 +11,5 @@ const plainNutzernamePasswort = {
     password: "g3h3im"
 };
 
-const TOPIC_SHORTLINKS = "Dozent.Decker.ShortLinks";
-
+// folgende Zeile auskommentieren, wenn lokaler Kafka-Server verwendet werden soll
 module.exports = plainNutzernamePasswort;
