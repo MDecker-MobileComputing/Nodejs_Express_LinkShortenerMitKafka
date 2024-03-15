@@ -3,8 +3,8 @@ import expressNunjucks from "express-nunjucks";
 import moment          from "moment";
 
 import { getZusammenfassungFuerTagUndLink } from "./service.js";
+import { checkKuerzel }                     from "./service.js";
 import { mwRequestLogger }                  from "./middleware.js";
-import { mwCheckPfadParamKuerzel }          from "./middleware.js";
 import { mwCheckPfadParamDatum }            from "./middleware.js";
 
 const logger = logging.default("controller");
@@ -40,8 +40,7 @@ export function routenRegistrieren(app) {
     app.use( mwRequestLogger );
 
     const pfad = "/s/:kuerzel/:datum";
-    const mwArray = [ mwCheckPfadParamKuerzel, mwCheckPfadParamDatum ];
-    app.get(pfad, mwArray, getStatistikFuerKuerzelUndTag);
+    app.get(pfad, getStatistikFuerKuerzelUndTag);
     logger.info(`Route registriert: GET ${pfad}`);
 };
 
@@ -58,6 +57,19 @@ function getStatistikFuerKuerzelUndTag(request, response) {
 
     const kuerzel = request.params.kuerzel;
     const datum   = request.params.datum;
+
+    if (checkKuerzel(kuerzel) === false) {
+
+        response.status(400); // Bad Request
+        response.render("fehler_pfadparameter", {
+            titel   : "Pfadparameter 'kuerzel' enthält ungültige Zeichen",
+            pfadparameter : "kuerzel",
+            wert          :  kuerzel
+        });
+
+        return;
+    }
+
 
     // *** Service-Funktion aufrufen ***
     const ergebnisObjekt = getZusammenfassungFuerTagUndLink(kuerzel, datum);

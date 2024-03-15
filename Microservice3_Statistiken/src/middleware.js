@@ -30,25 +30,6 @@ export function mwRequestLogger(req, res, next) {
 };
 
 
-/**
- *  Middelware-Funktion checkt, ob Pfadparameter `kuerzel` zulässigen Wert enthält.
- */
-export function mwCheckPfadParamKuerzel(req, res, next) {
-
-    const kuerzel = req.params.kuerzel;
-
-    const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
-
-    if (KUERZEL_REGEXP.test(kuerzel) == false) {
-
-        const fehlerText = `Pfadparameter 'kuerzel' enthält unerlaubte Zeichen: ${kuerzel}`;
-        logger.error(fehlerText);
-        res.status(400).send({ "nachricht": fehlerText });
-        return;
-    }
-
-    next();
-}
 
 
 /**

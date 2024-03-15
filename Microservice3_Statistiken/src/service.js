@@ -24,6 +24,21 @@ export async function statistikDatensatzVerbuchen(statistikObjekt) {
 
 
 /**
+ * Kürzel von Shortlink auf Gültigkeit prüfen (nur Buchstaben, Ziffern, Bindestrich und Unterstrich).
+ *
+ * @param {*} kuerzel Kürzel, das zu überprüfen ist.
+ *
+ * @returns `true` gdw. Kürzel gültig ist, sonst `false`.
+ */
+export function checkKuerzel(kuerzel) {
+
+    const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
+
+    return KUERZEL_REGEXP.test(kuerzel);
+}
+
+
+/**
  * Ermittelt die Anzahl der erfolgreichen und erfolglosen Zugriffe für den Shortlink
  * mit dem angegebenen Kürzel am angegebenen Datum.
  *
