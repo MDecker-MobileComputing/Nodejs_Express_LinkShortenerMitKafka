@@ -1,6 +1,8 @@
-import logging         from "logging";
+import express         from "express";
 import expressNunjucks from "express-nunjucks";
+import logging         from "logging";
 import moment          from "moment";
+
 
 import { getZusammenfassungFuerTagUndLink } from "./service.js";
 import { checkKuerzel, checkDatum }         from "./service.js";
@@ -10,11 +12,30 @@ const logger = logging.default("controller");
 
 
 /**
+ * Express.js konfigurieren:
+ * * Allgemeine Middleware-Funktionen registrieren
+ * * Template-Engine "Nunjucks" konfigurieren
+ * * Routen registrieren
+ * * Verzeichnis mit statischen Dateien festlegen
+ *
+ * @param {*} app Express.js-Objekt
+ */
+export function expressKonfigurieren(app) {
+
+    app.use( mwRequestLogger );
+    app.use( express.static("statischerWebContent") );
+
+    templateEngineKonfigurieren(app);
+    routenRegistrieren(app);
+}
+
+
+/**
  * Template-Engine "Nunujs" konfigurieren.
  *
  * @param {*} app Express.js-Objekt
  */
-export async function templateEngineKonfigurieren(app) {
+function templateEngineKonfigurieren(app) {
 
     app.set("views", "nunjucks-templates/");
 
@@ -30,13 +51,11 @@ export async function templateEngineKonfigurieren(app) {
 
 
 /**
- * Routen und Middleware-Funktionen registrieren.
+ * Routen registrieren.
  *
  * @param app App-Objekt von Express.js
  */
-export function routenRegistrieren(app) {
-
-    app.use( mwRequestLogger );
+function routenRegistrieren(app) {
 
     const pfad = "/s/:kuerzel/:datum";
     app.get(pfad, getStatistikFuerKuerzelUndTag);

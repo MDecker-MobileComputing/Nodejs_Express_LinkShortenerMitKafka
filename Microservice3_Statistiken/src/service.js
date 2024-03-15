@@ -40,7 +40,8 @@ export function checkKuerzel(kuerzel) {
 
 
 /**
- * Datum auf Gültigkeit prüfen (Format "YYYY-MM-DD").
+ * Datum auf Gültigkeit prüfen (Format "YYYY-MM-DD", kein Datum in
+ * der Zukunft).
  *
  * @param {*} datum Datum, das zu überprüfen ist.
  *
@@ -48,7 +49,22 @@ export function checkKuerzel(kuerzel) {
  */
 export function checkDatum(datum) {
 
-    return moment(datum, "YYYY-MM-DD", true).isValid(); // true=strict mode
+    const momentDatum = moment(datum, "YYYY-MM-DD", true);
+
+    if (momentDatum.isValid() == false) {
+
+        logger.warn(`Datum ist syntaktisch nicht korrekt: ${datum}`);
+        return false;
+    }
+
+    const jetzt = moment();
+    if (momentDatum.isAfter(jetzt)) {
+
+        logger.warn(`Datum liegt in der Zukunft: ${datum}`);
+        return false;
+    }
+
+    return true;
 }
 
 
