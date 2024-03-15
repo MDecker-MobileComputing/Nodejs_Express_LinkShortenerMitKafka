@@ -10,7 +10,8 @@ const logger = logging.default("kafka-empfaenger");
 
 /**
  * Kafka-Empfänger für Shortlink-Definitionen/Updates starten.
- * <br><br
+ * <br><br>
+ *
  * Diese Funktion darf erst aufgerufen werden, wenn das Topic existiert!
  *
  * @param {number} portNummber Port-Nummber für HTTP-Server, wird für Client+GroupID verwendet
@@ -19,23 +20,29 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
     const clientUndGroupId = `shortlink-resolver-${portNummber}`;
 
-    /*
-    const kafka = new Kafka({ brokers: [ "localhost:9092" ],
-                              clientId: clientUndGroupId,
-                              logLevel: logLevel.ERROR
-                            });
-    */
+    let kafka = null;
 
-    const kafka = new Kafka({
-        clientId: clientUndGroupId,
-        brokers: ["zimolong.eu:9092"],
-        sasl: plainNutzernamePasswort,
-        ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
-        connectionTimeout: 1000,
-        authenticationTimeout: 1000,
-        logLevel: logLevel.ERROR,
-    });
+    if (plainNutzernamePasswort.username) {
 
+        logger.info("Konfiguration für entfernten Kafka-Server erkannt.");
+
+        kafka = new Kafka({ clientId: clientUndGroupId,
+                            brokers: ["zimolong.eu:9092"],
+                            sasl: plainNutzernamePasswort,
+                            ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
+                            connectionTimeout: 1000,
+                            authenticationTimeout: 1000,
+                            logLevel: logLevel.ERROR
+                          });
+    } else {
+
+        logger.info("Konfiguration für lokalen Kafka-Server erkannt.");
+
+        kafka = new Kafka({ brokers: [ "localhost:9092" ],
+                            clientId: clientUndGroupId,
+                            logLevel: logLevel.ERROR
+                          });
+    }
 
 
     try {
