@@ -5,16 +5,16 @@ import plainNutzernamePasswort from '../../kafka-sasl.js';
 
 const logger = logging.default("kafka-sender");
 
-/*
+const clientId = "nodejs-link-definition-sender"
+
+
 const kafka = new Kafka({ brokers: [ "localhost:9092" ],
-                          clientId: "nodejs-kafka-sender",
+                          clientId: clientId,
                           logLevel: logLevel.ERROR
                         });
-*/
-
-
+/*
 const kafka = new Kafka({
-    clientId: "nodejs-kafka-sender",
+    clientId: clientId,
     brokers: ["zimolong.eu:9092"],
     sasl: plainNutzernamePasswort,
     ssl: false, // Disabling SSL as you're using SASL_PLAINTEXT
@@ -22,6 +22,7 @@ const kafka = new Kafka({
     authenticationTimeout: 1000,
     logLevel: logLevel.ERROR,
 });
+*/
 
 
 let verbunden = false;
