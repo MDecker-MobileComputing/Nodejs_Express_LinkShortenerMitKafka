@@ -1,12 +1,12 @@
 import logging             from "logging";
 import { Kafka, logLevel } from "kafkajs";
 
-
 import plainNutzernamePasswort  from '../../kafka-sasl.js';
+
+import { statistikDatensatzVerbuchen } from "./service.js";
 
 
 const logger = logging.default("kafka-empfaenger");
-
 
 const clientUndGroupId = "nodejs-shortlink-stats-empfaenger";
 
@@ -64,7 +64,7 @@ export async function kafkaEmpfaengerStarten() {
 
                     const payloadObjekt = JSON.parse(payloadString);
 
-                    // Statistik-Record in der Datenbank speichern
+                    statistikDatensatzVerbuchen(payloadObjekt);
                 }
                 catch (jsonFehler) {
 

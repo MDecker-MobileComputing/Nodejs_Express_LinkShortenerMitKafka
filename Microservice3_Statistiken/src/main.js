@@ -1,9 +1,13 @@
 import logging from "logging";
 import express from "express";
 
-import { kafkaEmpfaengerStarten } from "./kafka-empfaenger.js";
+import { kafkaEmpfaengerStarten  } from "./kafka-empfaenger.js";
+import { datenbankInitialisieren } from "./datenbank.js";
 
 const logger = logging.default("main");
+
+
+await datenbankInitialisieren();
 
 const app = express();
 app.use( express.static("statischerWebContent") );
