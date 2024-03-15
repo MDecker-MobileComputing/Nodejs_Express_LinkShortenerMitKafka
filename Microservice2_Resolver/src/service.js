@@ -1,6 +1,7 @@
 import logging from "logging";
 
-import { getByKuerzel, upsert } from "./datenbank.js";
+import { getByKuerzel, upsert    } from "./datenbank.js";
+import { sendeStatistikNachricht } from "./kafka-sender.js";
 
 
 const logger = logging.default("service");
@@ -8,18 +9,22 @@ const logger = logging.default("service");
 
 /**
  * Service-Funktion für Auflösen von Shortlink.
- * 
+ *
  * @param {*} kuerzel Kürzel von Shortlink, der aufgelöst werden soll
- * 
- * @returns Objekt mit URL und Beschreibung des Shortlinks oder leeres Objekt, 
+ *
+ * @param {string} User-Agent-String des Browsers, wird für Statistik-Event benötigt
+ *
+ * @returns Objekt mit URL und Beschreibung des Shortlinks oder leeres Objekt,
  *          wenn nicht gefunden oder gefundener Shortlink deaktiviert ist.
  */
-export function shortlinkAufloesen(kuerzel) {
+export function shortlinkAufloesen(kuerzel, userAgentString) {
 
     const dbErgebnisObjekt = getByKuerzel(kuerzel);
     if (dbErgebnisObjekt === undefined) {
 
         logger.info(`Kürzel nicht gefunden: ${kuerzel}`);
+        statistikNachrichtSenden(kuerzel, false, userAgentString);
+
         return {};
 
     } else {
@@ -27,22 +32,48 @@ export function shortlinkAufloesen(kuerzel) {
         if (dbErgebnisObjekt.ist_aktiv === false) {
 
             logger.info(`Kürzel gefunden, ist aber deaktiviert: ${kuerzel}`);
+            statistikNachrichtSenden(kuerzel, false, userAgentString);
+
             return {};
 
         } else {
 
             logger.info(`Kürzel gefunden, ist aktiv: ${kuerzel}`);
+            statistikNachrichtSenden(kuerzel, false, userAgentString);
 
             return dbErgebnisObjekt;
-        }        
+        }
     }
 }
 
 
 /**
+ * Statistik-Event über erfolgreiches/erfolgloses Auflösen von Shortlink senden.
+ *
+ * @param {*} kuerzel Kürzel des Shortlinks
+ *
+ * @param {*} erfolg {@code true} gdw., wenn der Shortlink erfolgreich aufgelöst wurde,
+ *                   sonst {@code false} (`false` auch bei deaktiviertem Shortlink).
+ *
+ * @param {string} userAgentString User-Agent-String des Browsers
+ */
+function statistikNachrichtSenden(kuerzel, erfolg, userAgentString) {
+
+    const statistikObjekt = {
+        kuerzel   : kuerzel,
+        erfolg    : erfolg,
+        zeitpunkt : new Date(),
+        userAgent : userAgentString
+    };
+
+    sendeStatistikNachricht(statistikObjekt);
+}
+
+
+/**
  * Shortlink-Datensatz (via Kafka empfangen) neu anlegen oder aktualisieren.
- * 
- * @param {*} shortlinkObjekt 
+ *
+ * @param {*} shortlinkObjekt Neues oder zu aktualisierendes Shortlink-Objekt.
  */
 export async function neuOderAktualisieren(shortlinkObjekt) {
 
@@ -52,11 +83,11 @@ export async function neuOderAktualisieren(shortlinkObjekt) {
     if (dbErgebnisObjekt === undefined) {
 
         logger.info(`Versuche neuen Shortlink in DB zu speichern: ${kuerzel}`);
-        
+
     } else {
 
         logger.info(`Versuche Shortlink in DB zu aktualisieren: ${kuerzel}`);
     }
 
-    await upsert(shortlinkObjekt);    
+    await upsert(shortlinkObjekt);
 }

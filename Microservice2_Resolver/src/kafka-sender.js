@@ -5,8 +5,7 @@ import plainNutzernamePasswort from '../../kafka-sasl.js';
 
 const logger = logging.default("kafka-sender");
 
-const clientId = "nodejs-shortlink-definition-sender";
-
+const clientId = "nodejs-shortlink-resolver-stats-sender";
 
 let kafka = null;
 
@@ -39,37 +38,26 @@ const producer = kafka.producer();
 
 
 /**
- * Neuen oder geänderten Shortlink via Kafka an die Resolver-Microservices senden.
+ * Nachricht mit Statistik-Event für Auflösen von Shortlink via Kafka senden.
  *
- * @param {object} shortlinkObjekt  Shortlink-Objekt, das gesendet werden soll; auch
- *                                  bei Änderungen müssen alle Attribute gesetzt sein.
+ * @param {object} statistikObjekt Kürzel, Zeitpunkt und Flag für Erfolg
  *
  * @return {boolean} `true` wenn die Nachricht erfolgreich gesendet wurde, sonst `false`.
  */
-export async function sendeKafkaNachricht(shortlinkObjekt) {
+export async function sendeStatistikNachricht(statistikObjekt) {
 
     try {
 
-        // Neues Objekt für Kafka-Nachricht erstellen, das nur die benötigten
-        // Attribute enthält (Passwort darf nicht über Kafka gesendet werden).
-        const transportObjekt = {
-            kuerzel     : shortlinkObjekt.kuerzel,
-            url         : shortlinkObjekt.url,
-            beschreibung: shortlinkObjekt.beschreibung,
-            ist_aktiv   : shortlinkObjekt.ist_aktiv,
-            erstellt_am : shortlinkObjekt.erstellt_am,
-            geaendert_am: shortlinkObjekt.geaendert_am
-        };
-
-        const shortlinkObjektAlsJsonString = JSON.stringify(transportObjekt);
+        const statistikObjektAlsJsonString = JSON.stringify(statistikObjekt);
 
         // Schlüssel als Key der Nachricht, damit eine Änderung des Shortlinks
         // nicht die Originalnachricht überholt. Nachrichten mit demselben Schlüssel
         // kommen nämlich in dieselbe Partition des Topics, und nur für eine Partition
         // ist gewährleistet, dass eine Nachricht nicht eine andere überholt.
         const nachrichtObjekt = {
-            key  : shortlinkObjekt.kuerzel,
-            value: shortlinkObjektAlsJsonString
+
+            key  : statistikObjekt.kuerzel,
+            value: statistikObjektAlsJsonString
         };
 
         if (verbunden === false) {
@@ -84,11 +72,11 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
             logger.info("Kafka-Producer war schon verbunden.")
         }
 
-        await producer.send({ topic: "Dozent.Decker.ShortLinks",
+        await producer.send({ topic: "Dozent.Decker.ResolverStats",
                               messages: [ nachrichtObjekt ]
                             });
 
-        logger.info(`Kafka-Nachricht für Shortlink mit Kürzel "${shortlinkObjekt.kuerzel}" gesendet.`);
+        logger.info(`Statistik-Event für Shortlink mit Kürzel "${statistikObjekt.kuerzel}" via Kafka gesendet.`);
 
         //await producer.disconnect();
         // disconnect erst beim Herunterfahren des Microservices ... aber wie fängt man das ab?
@@ -97,7 +85,7 @@ export async function sendeKafkaNachricht(shortlinkObjekt) {
     }
     catch (fehler) {
 
-        logger.error(`Fehler beim Senden einer Kafka-Nachricht für Kürzel "${shortlinkObjekt.kuerzel}": ${fehler}`);
+        logger.error(`Fehler beim Senden einer Kafka-Nachricht mit Statistik-Event "${statistikObjekt.kuerzel}": ${fehler}`);
         return false;
     }
 }

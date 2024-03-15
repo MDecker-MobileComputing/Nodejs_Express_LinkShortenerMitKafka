@@ -34,8 +34,10 @@ function getKuerzel(request, response) {
 
     const kuerzel = request.params.kuerzel.trim();
 
+    const userAgentString = request.headers["user-agent"];
+
     // *** Service-Funktion aufrufen ***
-    const ergObjekt = shortlinkAufloesen(kuerzel);
+    const ergObjekt = shortlinkAufloesen(kuerzel, userAgentString);
 
     if (!ergObjekt.url) {
 

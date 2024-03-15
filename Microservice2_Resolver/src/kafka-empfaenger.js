@@ -75,7 +75,7 @@ export async function kafkaEmpfaengerStarten(portNummber) {
             },
         });
 
-        logger.info(`Kafka-Consumer Client+GroupID "${clientUndGroupId}" gestartet.`);
+        logger.info(`Kafka-Consumer mit Client+GroupID "${clientUndGroupId}" gestartet.`);
     }
     catch (error) {
 
