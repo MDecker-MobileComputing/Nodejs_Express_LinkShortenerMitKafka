@@ -1,11 +1,7 @@
-import logging from "logging";
-import moment  from "moment";
-
+import logging             from "logging";
 import { Kafka, logLevel } from "kafkajs";
 
-
-import plainNutzernamePasswort  from '../../kafka-sasl.js';
-
+import plainNutzernamePasswort         from '../../kafka-sasl.js';
 import { statistikDatensatzVerbuchen } from "./service.js";
 
 
