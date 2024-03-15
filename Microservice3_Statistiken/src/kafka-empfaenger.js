@@ -1,23 +1,23 @@
 import logging             from "logging";
 import { Kafka, logLevel } from "kafkajs";
 
-import { neuOderAktualisieren } from "./service.js";
+
 import plainNutzernamePasswort  from '../../kafka-sasl.js';
+
 
 const logger = logging.default("kafka-empfaenger");
 
 
+const clientUndGroupId = "nodejs-shortlink-stats-empfaenger";
+
+
 /**
- * Kafka-Empfänger für Shortlink-Definitionen/Updates starten.
+ * Kafka-Empfänger für Statistik-Events starten.
  * <br><br>
  *
  * Diese Funktion darf erst aufgerufen werden, wenn das Topic existiert!
- *
- * @param {number} portNummber Port-Nummber für HTTP-Server, wird für Client+GroupID verwendet
  */
-export async function kafkaEmpfaengerStarten(portNummber) {
-
-    const clientUndGroupId = `shortlink-resolver-${portNummber}`;
+export async function kafkaEmpfaengerStarten() {
 
     let kafka = null;
 
@@ -43,7 +43,6 @@ export async function kafkaEmpfaengerStarten(portNummber) {
                           });
     }
 
-
     try {
 
         // GroupID hängt von Port-Nummer ab, damit jede Instanz des Microservices eine eigene GroupID hat
@@ -52,20 +51,20 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
         await consumer.connect();
 
-        await consumer.subscribe({ topic: "Dozent.Decker.ShortLinks" });
+        await consumer.subscribe({ topic: "Dozent.Decker.ResolverStats" });
 
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
 
                 const schluessel    = message.key.toString();
                 const payloadString = message.value.toString();
-                logger.info(`Shortlink für Kürzel "${schluessel}" empfangen: ${payloadString}`);
+                logger.info(`Statistik-Nachricht für Kürzel "${schluessel}" empfangen: ${payloadString}`);
 
                 try {
 
                     const payloadObjekt = JSON.parse(payloadString);
 
-                    await neuOderAktualisieren(payloadObjekt); // Service-Funktion aufrufen für Verbuchung in DB
+                    // Statistik-Record in der Datenbank speichern
                 }
                 catch (jsonFehler) {
 

@@ -39,6 +39,15 @@
             "env": {
                 "PORTNUMMER": "9002"
             }
+        }, {
+                "type": "node",
+                "request": "launch",
+                "name": "MS 'Statistiken' starten",
+                "skipFiles": [
+                    "<node_internals>/**"
+                ],
+                "program": "${workspaceFolder}/Microservice3_Statistiken/src/main.js",
+                "cwd": "${workspaceFolder}/Microservice3_Statistiken"
         }
     ]
 }
