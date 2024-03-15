@@ -5,7 +5,7 @@ import moment             from "moment";
 
 import { routenRegistrieren      } from "./controller.js";
 import { datenbankInitialisieren } from "./datenbank.js";
-import { kafkaEmpfaengerStarten  } from "./kafka.js";
+import { kafkaEmpfaengerStarten  } from "./kafka-empfaenger.js";
 
 
 const logger = logging.default("main");
@@ -45,6 +45,6 @@ app.listen( PORTNUMMER,
     () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
   );
 
-  
-// Kafka-Konsument starten  
+
+// Kafka-Konsument starten
 kafkaEmpfaengerStarten(PORTNUMMER);

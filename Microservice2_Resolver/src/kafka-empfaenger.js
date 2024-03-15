@@ -21,8 +21,8 @@ export async function kafkaEmpfaengerStarten(portNummber) {
 
     /*
     const kafka = new Kafka({ brokers: [ "localhost:9092" ],
-                            clientId: clientUndGroupId,
-                            logLevel: logLevel.ERROR
+                              clientId: clientUndGroupId,
+                              logLevel: logLevel.ERROR
                             });
     */
 
@@ -35,6 +35,7 @@ export async function kafkaEmpfaengerStarten(portNummber) {
         authenticationTimeout: 1000,
         logLevel: logLevel.ERROR,
     });
+
 
 
     try {
