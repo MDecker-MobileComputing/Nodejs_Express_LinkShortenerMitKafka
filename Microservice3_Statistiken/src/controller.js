@@ -3,10 +3,10 @@ import expressNunjucks from "express-nunjucks";
 import logging         from "logging";
 import moment          from "moment";
 
-
 import { getZusammenfassungFuerTagUndLink } from "./service.js";
 import { checkKuerzel, checkDatum }         from "./service.js";
 import { mwRequestLogger }                  from "./middleware.js";
+
 
 const logger = logging.default("controller");
 
