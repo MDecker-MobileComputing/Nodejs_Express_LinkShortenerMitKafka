@@ -1,5 +1,5 @@
 import logging from "logging";
-import moment  from "moment";
+
 
 const logger = logging.default("middleware-funktionen");
 
@@ -28,25 +28,3 @@ export function mwRequestLogger(req, res, next) {
 
     next();
 };
-
-
-
-
-/**
- * Middleware-Funktion checkt, ob Pfadparameter `datum` ein gültiges Datum
- * mit Format "YYYY-MM-DD" ist.
- */
-export function mwCheckPfadParamDatum(req, res, next) {
-
-    const datum = req.params.datum;
-
-    if (!moment(datum, 'YYYY-MM-DD', true).isValid()) {
-
-        const fehlerText = `Pfadparameter 'datum' ist kein gültiges Datum: ${datum}`;
-        logger.error(fehlerText);
-        res.status(400).send({ "nachricht": fehlerText });
-        return;
-    }
-
-    next();
-}

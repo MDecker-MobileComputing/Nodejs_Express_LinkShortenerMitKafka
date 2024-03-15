@@ -3,9 +3,8 @@ import expressNunjucks from "express-nunjucks";
 import moment          from "moment";
 
 import { getZusammenfassungFuerTagUndLink } from "./service.js";
-import { checkKuerzel }                     from "./service.js";
+import { checkKuerzel, checkDatum }         from "./service.js";
 import { mwRequestLogger }                  from "./middleware.js";
-import { mwCheckPfadParamDatum }            from "./middleware.js";
 
 const logger = logging.default("controller");
 
@@ -62,14 +61,22 @@ function getStatistikFuerKuerzelUndTag(request, response) {
 
         response.status(400); // Bad Request
         response.render("fehler_pfadparameter", {
-            titel   : "Pfadparameter 'kuerzel' enthält ungültige Zeichen",
+            titel   : "Pfadparameter \"kuerzel\" enthält ungültige Zeichen",
             pfadparameter : "kuerzel",
             wert          :  kuerzel
         });
-
         return;
     }
+    if (checkDatum(datum) === false) {
 
+        response.status(400); // Bad Request
+        response.render("fehler_pfadparameter", {
+            titel   : "Pfadparameter \"datum\" ist ungültig",
+            pfadparameter : "datum",
+            wert          :  datum
+        });
+        return;
+    }
 
     // *** Service-Funktion aufrufen ***
     const ergebnisObjekt = getZusammenfassungFuerTagUndLink(kuerzel, datum);

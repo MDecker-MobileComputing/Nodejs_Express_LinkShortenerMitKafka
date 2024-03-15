@@ -1,4 +1,5 @@
 import logging from "logging";
+import moment  from "moment";
 
 import { insert }                        from "./datenbank.js";
 import { queryRecordsByKuerzelUndDatum } from "./datenbank.js";
@@ -35,6 +36,19 @@ export function checkKuerzel(kuerzel) {
     const KUERZEL_REGEXP = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 
     return KUERZEL_REGEXP.test(kuerzel);
+}
+
+
+/**
+ * Datum auf Gültigkeit prüfen (Format "YYYY-MM-DD").
+ *
+ * @param {*} datum Datum, das zu überprüfen ist.
+ *
+* @returns `true` gdw. wenn Datum gültig ist
+ */
+export function checkDatum(datum) {
+
+    return moment(datum, "YYYY-MM-DD", true).isValid(); // true=strict mode
 }
 
 
