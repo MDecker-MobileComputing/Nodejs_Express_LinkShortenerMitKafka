@@ -37,16 +37,17 @@ export function expressKonfigurieren(app) {
  */
 function templateEngineKonfigurieren(app) {
 
-    app.set("views", "nunjucks-templates/");
+    app.set( "views"      , "nunjucks-templates/" );
+    app.set( "view engine", "njk"                 );
 
     // Im Modus "Entwicklung" werden Änderungen an den Template-Dateien ohne Neustart der Anwendung wirksam.
     const istDevModus = app.get("env") === "development";
 
-    const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus });
+    const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus});
 
-    nj.env.addFilter("datum", function(date) { return moment(date).format("DD. MMMM YYYY (ddd)"); });
+    nj.env.addFilter( "datum", function(date) { return moment(date).format("DD. MMMM YYYY (ddd)"); });
 
-    logger.info(`Nunjucks konfiguriert (Modus: ${istDevModus ? "Entwicklung" : "Produktion"}).`);
+    logger.info( `Nunjucks konfiguriert (Modus: ${istDevModus ? "Entwicklung" : "Produktion"}).` );
 }
 
 
@@ -80,7 +81,7 @@ function getStatistikFuerKuerzelUndTag(request, response) {
 
         response.status(400); // Bad Request
         response.render("fehler_pfadparameter", {
-            titel   : "Pfadparameter \"kuerzel\" enthält ungültige Zeichen",
+            titel         : "Pfadparameter \"kuerzel\" enthält ungültige Zeichen",
             pfadparameter : "kuerzel",
             wert          :  kuerzel
         });

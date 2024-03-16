@@ -1,10 +1,10 @@
-{% extends "basis.html" %}
+{% extends "basis.njk" %}
 
 {% block inhalt %}
 <p>
    Tages-Statistik für Shortlink mit Kürzel <tt>{{ kuerzel }}</tt>:
    <ul>
-      <li>Tag                  : {{ datum | datum() }} </li>
+      <li>Tag                  : {{ datum | datum()  }} </li>
       <li>Erfolgreiche Zugriffe: {{ anzahl_erfolg    }}</li>
       <li>Erfolglose   Zugriffe: {{ anzahl_erfolglos }}</li>
    </ul>
