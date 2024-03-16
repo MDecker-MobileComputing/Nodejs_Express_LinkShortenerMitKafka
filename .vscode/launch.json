@@ -48,6 +48,20 @@
                 ],
                 "program": "${workspaceFolder}/Microservice3_Statistiken/src/main.js",
                 "cwd": "${workspaceFolder}/Microservice3_Statistiken"
+        }, 
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Vier Microservice-Instanzen starten",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "starten"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
