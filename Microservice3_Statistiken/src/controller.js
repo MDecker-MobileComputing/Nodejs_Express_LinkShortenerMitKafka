@@ -3,11 +3,11 @@ import expressNunjucks from "express-nunjucks";
 import logging         from "logging";
 import moment          from "moment";
 
+import { checkDatum }               from "./datum-helfer.js";
+import { checkMonat }               from "./datum-helfer.js";
 import { getStatsFuerTagUndLink   } from "./service.js";
 import { getStatsFuerMonatUndLink } from "./service.js";
 import { checkKuerzel }             from "./service.js";
-import { checkDatum }               from "./service.js";
-import { checkMonat }               from "./service.js";  
 import { mwRequestLogger }          from "./middleware.js";
 
 
