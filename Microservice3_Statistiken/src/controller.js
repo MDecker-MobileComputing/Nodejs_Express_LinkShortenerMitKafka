@@ -64,7 +64,7 @@ function templateEngineKonfigurieren(app) {
  */
 function routenRegistrieren(app) {
 
-    const pfad = "/s/:kuerzel/:datum";
+    const pfad = "/ts/:kuerzel/:datum";
     app.get(pfad, getStatistikFuerKuerzelUndTag);
     logger.info(`Route registriert: GET ${pfad}`);
 };
