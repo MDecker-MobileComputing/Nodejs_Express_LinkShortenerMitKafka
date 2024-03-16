@@ -10,19 +10,16 @@ const logger = logging.default("main");
 
 await datenbankInitialisieren();
 
-// Express.js konfigurieren
-const app = express();
 
+const app = express();
 expressKonfigurieren(app);
-logger.info("Express.js ist konfiguriert.");
 
 
 kafkaEmpfaengerStarten();
 
 
-
-const PORTNUMMER = 10000;
 // Web-Server starten
+const PORTNUMMER = 10000;
 app.listen( PORTNUMMER,
     () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
   );

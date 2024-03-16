@@ -10,6 +10,8 @@ an die Instanzen des Microservice "Shortlink Resolver".
 * Der Resolver-Dienst verwendet die Template-Engine [Nunjucks](https://mozilla.github.io/nunjucks/) zur Erzeugung der
 Ergebnis-Seiten.
 
+* Es gibt auch noch einen Statistik-Service der weitere Möglichkeiten mit Nunjucks demonstriert.
+
 <br>
 
 ----

@@ -30,6 +30,8 @@ export function expressKonfigurieren(app) {
 
     templateEngineKonfigurieren(app);
     routenRegistrieren(app);
+    
+    logger.info("Express.js ist konfiguriert.");
 }
 
 
@@ -41,7 +43,7 @@ export function expressKonfigurieren(app) {
 function templateEngineKonfigurieren(app) {
 
     app.set( "views"      , "nunjucks-templates/" );
-    app.set( "view engine", "njk"                 );
+    app.set( "view engine", "njk"                 ); // .njk statt .html, damit VSC-Extension für Nunjucks-Syntax-Highlighting funktioniert
 
     // Im Modus "Entwicklung" werden Änderungen an den Template-Dateien ohne Neustart der Anwendung wirksam.
     const istDevModus = app.get("env") === "development";
