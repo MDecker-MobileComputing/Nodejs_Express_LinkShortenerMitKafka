@@ -4,7 +4,6 @@ import express from "express";
 import { datenbankInitialisieren } from "./datenbank.js";
 import { expressKonfigurieren    } from "./controller.js";
 import { kafkaEmpfaengerStarten  } from "./kafka-empfaenger.js";
-import { kafkaStreamStarten }      from "./kafka-stream.js";
 
 const logger = logging.default("main");
 
@@ -18,10 +17,8 @@ expressKonfigurieren(app);
 logger.info("Express.js ist konfiguriert.");
 
 
-// Kafka starten
 kafkaEmpfaengerStarten();
-kafkaStreamStarten();
-logger.info("Kafka konfiguriert und gestartet.");
+
 
 
 const PORTNUMMER = 10000;
