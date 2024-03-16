@@ -39,7 +39,7 @@ export function shortlinkAufloesen(kuerzel, userAgentString) {
         } else {
 
             logger.info(`Kürzel gefunden, ist aktiv: ${kuerzel}`);
-            statistikNachrichtSenden(kuerzel, false, userAgentString);
+            statistikNachrichtSenden(kuerzel, true, userAgentString);
 
             return dbErgebnisObjekt;
         }
