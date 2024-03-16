@@ -90,7 +90,7 @@ function getStatistikFuerKuerzelUndTag(request, response) {
 
         response.status(400); // Bad Request
         response.render("fehler_pfadparameter", {
-            titel   : "Pfadparameter \"datum\" ist ungültig",
+            titel         : "Pfadparameter \"datum\" ist ungültig",
             pfadparameter : "datum",
             wert          :  datum
         });

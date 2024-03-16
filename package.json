@@ -1,6 +1,8 @@
 {
   "name": "shortlink_service",
   "description": "Link-Shortener bestehend aus drei Microservices",
+  "author": "MDecker-MobileComputing",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "concurrently": "^8.2.2"
   },
