@@ -43,9 +43,15 @@ function templateEngineKonfigurieren(app) {
     // Im Modus "Entwicklung" werden Änderungen an den Template-Dateien ohne Neustart der Anwendung wirksam.
     const istDevModus = app.get("env") === "development";
 
-    const nj = expressNunjucks(app, { watch: istDevModus, noCache: istDevModus});
+    const nj = expressNunjucks( app, 
+                                { watch  : istDevModus, 
+                                  noCache: istDevModus 
+                                } 
+                              );
 
-    nj.env.addFilter( "datum", function(date) { return moment(date).format("DD. MMMM YYYY (ddd)"); });
+    nj.env.addFilter( "datum", 
+                      function(date) { return moment(date).format("DD. MMMM YYYY (ddd)"); } 
+                    );
 
     logger.info( `Nunjucks konfiguriert (Modus: ${istDevModus ? "Entwicklung" : "Produktion"}).` );
 }
