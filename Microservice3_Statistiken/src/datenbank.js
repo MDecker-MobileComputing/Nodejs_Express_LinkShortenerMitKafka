@@ -12,7 +12,7 @@ const anfangsDaten = [
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
     },
     { "datum"     :"1999-12-31",
-      "kuerzel"   :"test-2",
+      "kuerzel"   :"test-1",
       "erfolg"    :false,
       "userAgent" :"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
     }
@@ -60,7 +60,7 @@ export async function insert(statistikObjekt) {
  *
  * @param {string} kuerzel Kürzel des Shortlinks
  *
- * @param {string} datum Datum im Format "YYYY-MM-DD"
+ * @param {string} datum Datum (Tag) im Format "YYYY-MM-DD"
  */
 export function queryRecordsByKuerzelUndDatum(kuerzel, datum) {
 
@@ -68,6 +68,31 @@ export function queryRecordsByKuerzelUndDatum(kuerzel, datum) {
                                         datensatz.datum   === datum;
 
     return datenbank.data.filter( filterFunktion );
+}
+
+
+/**
+ * Gibt alle Datensätze für Zugriffe für das angegebene Kürzel und Monat zurück.
+ * 
+ * @param {*} kuerzel Kürzel des Shortlinks
+ * 
+ * @param {*} monat Monat im Format "YYYY-MM"
+ * 
+ * @return {Array} Array mit Objekten, die die Anzahl der erfolgreichen und erfolglosen
+ *                 Zugriffe für jeden Tag im Monat enthalten; sortiert nach aufsteigendem
+ *                 Datum.
+ */
+export function queryRecordsByKuerzelUndMonat(kuerzel, monat) {
+
+    const filterFunktion = datensatz => datensatz.kuerzel === kuerzel &&
+                                        datensatz.datum.startsWith(monat);
+
+    const ergebnisArray = datenbank.data.filter( filterFunktion );                                        
+
+
+    const sortierFunktion = (a, b) => a.datum.localeCompare(b.datum);
+    
+    return ergebnisArray.sort( sortierFunktion );
 }
 
 

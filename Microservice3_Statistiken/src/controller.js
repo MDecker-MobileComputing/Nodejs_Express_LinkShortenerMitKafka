@@ -3,9 +3,12 @@ import expressNunjucks from "express-nunjucks";
 import logging         from "logging";
 import moment          from "moment";
 
-import { getZusammenfassungFuerTagUndLink } from "./service.js";
-import { checkKuerzel, checkDatum }         from "./service.js";
-import { mwRequestLogger }                  from "./middleware.js";
+import { getStatsFuerTagUndLink   } from "./service.js";
+import { getStatsFuerMonatUndLink } from "./service.js";
+import { checkKuerzel }             from "./service.js";
+import { checkDatum }               from "./service.js";
+import { checkMonat }               from "./service.js";  
+import { mwRequestLogger }          from "./middleware.js";
 
 
 const logger = logging.default("controller");
@@ -64,14 +67,67 @@ function templateEngineKonfigurieren(app) {
  */
 function routenRegistrieren(app) {
 
-    const pfad = "/ts/:kuerzel/:datum";
-    app.get(pfad, getStatistikFuerKuerzelUndTag);
-    logger.info(`Route registriert: GET ${pfad}`);
+    // Tages-Statistiken (ts)
+    const pfad1 = "/ts/:kuerzel/:datum"; 
+    app.get(pfad1, getStatistikFuerKuerzelUndTag);
+    logger.info(`Route registriert: GET ${pfad1}`);
+
+    // Tages-Statistiken (ms)
+    const pfad2 = "/ms/:kuerzel/:monat";
+    app.get(pfad2, getStatistikFuerKuerzelUndMonat);
+    logger.info(`Route registriert: GET ${pfad2}`);
 };
 
 
 /**
- * Funktion für HTTP-GET-Pfad `/s/:kuerzel/:datum`.
+ * Funktion für HTTP-GET-Pfad `/ts/:kuerzel/:monat` (Monats-Statistik).
+ * 
+ * @param {*} request Request-Objekt, aus dem die beiden Pfad-Parameter
+ *                    `kuerzel` und `monat` ausgelesen werden.
+ * 
+ * @param {*} response Response-Objekt mit Seite von Template-Engine gerendert
+ */
+function getStatistikFuerKuerzelUndMonat(request, response) {
+
+    const kuerzel = request.params.kuerzel;
+    const monat   = request.params.monat;
+
+    if (checkKuerzel(kuerzel) === false) {
+
+        response.status(400); // Bad Request
+        response.render("fehler_pfadparameter", {
+            titel         : "Pfadparameter \"kuerzel\" enthält ungültige Zeichen",
+            pfadparameter : "kuerzel",
+            wert          :  kuerzel
+        });
+        return;
+    }
+    if (checkMonat(monat) === false) {
+
+        response.status(400); // Bad Request
+        response.render("fehler_pfadparameter", {
+            titel         : "Pfadparameter \"monat\" ist ungültig",
+            pfadparameter : "monat",
+            wert          :  monat
+        });
+        return;
+    }
+
+    // *** Service-Funktion aufrufen ***
+    const ergebnisArray = getStatsFuerMonatUndLink(kuerzel, monat);
+
+    response.status(200); // OK
+    response.render("statistik-kuerzel-monat", {
+        titel            : `Zugriffs-Statisik für Shortlink mit Kürzel "${kuerzel}"`,
+        kuerzel          : kuerzel,
+        monat            : monat,
+        ergebnis_array   : ergebnisArray // kann leer sein
+    });
+}
+
+
+/**
+ * Funktion für HTTP-GET-Pfad `/ts/:kuerzel/:datum` (Tages-Statistik).
  *
  * @param {*} request Request-Objekt, aus dem die beiden Pfad-Parameter
  *                    `kuerzel` und `datum` ausgelesen werden.
@@ -105,11 +161,10 @@ function getStatistikFuerKuerzelUndTag(request, response) {
     }
 
     // *** Service-Funktion aufrufen ***
-    const ergebnisObjekt = getZusammenfassungFuerTagUndLink(kuerzel, datum);
+    const ergebnisObjekt = getStatsFuerTagUndLink(kuerzel, datum);
 
 
     response.status(200); // OK
-
     response.render("statistik-kuerzel-tag", {
         titel            : `Zugriffs-Statisik für Shortlink mit Kürzel "${kuerzel}"`,
         kuerzel          : kuerzel,
