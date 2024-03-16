@@ -111,7 +111,6 @@ function getStatistikFuerKuerzelUndTag(request, response) {
     response.status(200); // OK
 
     response.render("statistik-kuerzel-tag", {
-
         titel            : `Zugriffs-Statisik für Shortlink mit Kürzel "${kuerzel}"`,
         kuerzel          : kuerzel,
         datum            : datum,
