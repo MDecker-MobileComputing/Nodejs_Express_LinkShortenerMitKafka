@@ -8,7 +8,7 @@ import { datenbankInitialisieren } from "./datenbank.js";
 import { kafkaEmpfaengerStarten  } from "./kafka-empfaenger.js";
 
 
-const logger = logging.default("main");
+const logger = logging.default("main-resolver");
 
 // Portnummer aus Umgebungsvariablen auslesen (Fallback-Wert: 9000)
 const PORTNUMMER = process.env.PORTNUMMER || 9000;
@@ -42,8 +42,8 @@ logger.info(`Nunjucks konfiguriert, Modus=${istDevModus ? "Entwicklung" : "Produ
 
 // Web-Server starten
 app.listen( PORTNUMMER,
-    () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
-  );
+            () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
+          );
 
 
 // Kafka-Konsument starten

@@ -76,10 +76,12 @@ export async function sendeBrowserDaten(browserName, betriebssystem) {
             await producer.send({ topic: "Dozent.Decker.BrowserStrings",
                                   messages: [ browserNachricht ]
                                 });
+            logger.info(`Browser-String in Kafka-Transaktion gesendet: "${browserName}"`); 
             
             await producer.send({ topic: "Dozent.Decker.BetriebssystemStrings",
                                   messages: [ betriebssystemNachricht ]
-                                });                                
+                                });                 
+            logger.info(`Betriebssystem-String in Kafka-Transaktion gesendet: "${betriebssystem}"`); 
 
             await transaktion.commit()
             logger.info("Transaktion erfolgreich abgeschlossen.");

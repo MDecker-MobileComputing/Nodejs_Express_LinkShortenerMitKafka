@@ -52,7 +52,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Vier Microservice-Instanzen starten",
+            "name": "Alle vier Microservice-Instanzen starten",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",

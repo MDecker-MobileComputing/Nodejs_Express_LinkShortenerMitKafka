@@ -5,7 +5,7 @@ import { datenbankInitialisieren } from "./datenbank.js";
 import { expressKonfigurieren    } from "./controller.js";
 import { kafkaEmpfaengerStarten  } from "./kafka-empfaenger.js";
 
-const logger = logging.default("main");
+const logger = logging.default("main-statistik");
 
 
 await datenbankInitialisieren();
@@ -21,5 +21,5 @@ kafkaEmpfaengerStarten();
 // Web-Server starten
 const PORTNUMMER = 10000;
 app.listen( PORTNUMMER,
-    () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
-  );
+            () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
+          );

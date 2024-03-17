@@ -17,7 +17,7 @@ const logger = logging.default("service");
  * @returns Objekt mit URL und Beschreibung des Shortlinks oder leeres Objekt,
  *          wenn nicht gefunden oder gefundener Shortlink deaktiviert ist.
  */
-export function shortlinkAufloesen(kuerzel, userAgentString) {
+export async function shortlinkAufloesen(kuerzel, userAgentString) {
 
     const dbErgebnisObjekt = getByKuerzel(kuerzel);
     if (dbErgebnisObjekt === undefined) {
@@ -57,7 +57,7 @@ export function shortlinkAufloesen(kuerzel, userAgentString) {
  *
  * @param {string} userAgentString User-Agent-String des Browsers
  */
-function statistikNachrichtSenden(kuerzel, erfolg, userAgentString) {
+async function statistikNachrichtSenden(kuerzel, erfolg, userAgentString) {
 
     const statistikObjekt = {
         kuerzel   : kuerzel,
@@ -66,7 +66,7 @@ function statistikNachrichtSenden(kuerzel, erfolg, userAgentString) {
         userAgent : userAgentString
     };
 
-    sendeStatistikNachricht(statistikObjekt);
+    await sendeStatistikNachricht(statistikObjekt);
 }
 
 

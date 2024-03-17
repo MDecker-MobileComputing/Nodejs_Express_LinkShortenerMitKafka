@@ -30,14 +30,14 @@ export function routenRegistrieren(app) {
  *                     HTML-Seite von der Template-Engine geschrieben
  *                     wird
  */
-function getKuerzel(request, response) {
+async function getKuerzel(request, response) {
 
     const kuerzel = request.params.kuerzel.trim();
 
     const userAgentString = request.headers["user-agent"];
 
     // *** Service-Funktion aufrufen ***
-    const ergObjekt = shortlinkAufloesen(kuerzel, userAgentString);
+    const ergObjekt = await shortlinkAufloesen(kuerzel, userAgentString);
 
     if (!ergObjekt.url) {
 

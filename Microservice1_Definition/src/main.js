@@ -6,7 +6,7 @@ import { datenbankInitialisieren } from "./datenbank.js";
 import { mwRequestLogger         } from "./middleware-allgemein.js";
 import { mwCatchIllegalJson      } from "./middleware-allgemein.js";
 
-const logger = logging.default("main");
+const logger = logging.default("main-definition");
 
 
 // Express.js konfigurieren
@@ -24,5 +24,5 @@ datenbankInitialisieren();
 const PORTNUMMER = 8000;
 // Web-Server starten
 app.listen( PORTNUMMER,
-    () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
-  );
+            () => { logger.info(`Web-Server auf Port ${PORTNUMMER} gestartet.\n`); }
+          );
