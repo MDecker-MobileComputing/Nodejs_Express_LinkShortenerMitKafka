@@ -83,7 +83,7 @@ export async function sendeBrowserDaten(browserName, betriebssystem) {
                                 });                 
             logger.info(`Betriebssystem-String in Kafka-Transaktion gesendet: "${betriebssystem}"`); 
 
-            await transaktion.commit()
+            await transaktion.commit();
             logger.info("Transaktion erfolgreich abgeschlossen.");
 
         } catch (error) {
