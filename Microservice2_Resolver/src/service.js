@@ -23,7 +23,7 @@ export async function shortlinkAufloesen(kuerzel, userAgentString) {
     if (dbErgebnisObjekt === undefined) {
 
         logger.info(`Kürzel nicht gefunden: ${kuerzel}`);
-        statistikNachrichtSenden(kuerzel, false, userAgentString);
+        await statistikNachrichtSenden(kuerzel, false, userAgentString);
 
         return {};
 
@@ -32,14 +32,14 @@ export async function shortlinkAufloesen(kuerzel, userAgentString) {
         if (dbErgebnisObjekt.ist_aktiv === false) {
 
             logger.info(`Kürzel gefunden, ist aber deaktiviert: ${kuerzel}`);
-            statistikNachrichtSenden(kuerzel, false, userAgentString);
+            await statistikNachrichtSenden(kuerzel, false, userAgentString);
 
             return {};
 
         } else {
 
             logger.info(`Kürzel gefunden, ist aktiv: ${kuerzel}`);
-            statistikNachrichtSenden(kuerzel, true, userAgentString);
+            await statistikNachrichtSenden(kuerzel, true, userAgentString);
 
             return dbErgebnisObjekt;
         }
